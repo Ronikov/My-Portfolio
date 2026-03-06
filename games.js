@@ -1,310 +1,204 @@
 /* ═══════════════════════════════════════════════════════════════
    games.js  —  ALL PROJECT DATA LIVES HERE
    ---------------------------------------------------------------
+   Images go in the  images/  folder next to index.html.
+   Current image files:
+     images/battleplanes.png   — Battle Planes screenshot
+     images/aniwars.png        — AniWars logo
+     images/coffeegame.png     — Coffee game pixel logo
+     images/boxin.png          — Box In logo
+
    To add a new game:
-     1. Add its key to GAME_KEYS (controls order in prev/next nav)
-     2. Copy an existing block below and fill in your details
-   To edit a game: just find it by name and change the values
+     1. Add its key to GAME_KEYS (controls prev/next order)
+     2. Copy any block below, fill in your details, add the key
    ═══════════════════════════════════════════════════════════════ */
 
-/* Order controls the ← prev / next → navigation in the detail panel */
 const GAME_KEYS = [
-  'tidewalker',
-  'dreammerchant',
-  'sporerunner',
-  'rootbound',
-  'emberknight',
-  'clockworkcove',
+  'battleplanes',
+  'aniwars',
+  'coffeegame',
+  'boxin',
 ];
 
 const games = {
 
-  /* ── TIDEWALKER ──────────────────────────────────────────── */
-  tidewalker: {
-    /* Card (shown on the portfolio grid) */
-    cardTag:   'PLATFORMER',
-    cardColor: 'var(--cyan)',
-    cardEmoji: '🌊',
-    cardBg:    'linear-gradient(135deg,#1a3a4f,#0d2030)',
-    cardDesc:  'A fluid-based puzzle platformer where the tide rises with your heart rate. Custom water physics in Unity.',
-
-    /* Detail page */
-    title:    'TIDEWALKER',
-    subtitle: 'What if the ocean could feel your heartbeat?',
-    tag:      'PLATFORMER',
-    tagColor: 'var(--cyan)',
-    accent:   'var(--cyan)',
-    year:     '2024',
-    duration: '6 MONTHS',
-    team:     'SOLO',
-    engine:   'UNITY',
-    banner:   '🌊',
-    bannerBg: 'linear-gradient(135deg,#0d2030,#1a3a4f,#0a3040)',
-
-    overview: `Tidewalker is a fluid-based puzzle platformer built around a single core idea: the tide rises and falls in response to the player's real-time stress. Using device sensors (or keyboard simulation), the ambient water level shifts — calm players wade through tranquil shallows, anxious players race against rising floods.`,
-    descExtra: `The game was born from a university brief on biometric game design. I wanted to explore how environmental hazards could mirror internal states, making the world a direct reflection of the player's emotional condition rather than a passive backdrop.`,
-
-    features: [
-      'Real-time water physics with custom buoyancy simulation in Unity DOTS',
-      '15 handcrafted levels across 3 biomes — tidal caves, sunken ruins, coral towers',
-      'Dynamic ambient soundtrack that evolves with water depth',
-      'Accessibility mode replacing biometric input with a manual tide slider',
-      'Full speedrun mode with ghost replay system',
-    ],
-
-    designNotes: `The biggest challenge was making the mechanic feel fair rather than punishing. I ran 11 playtests and iterated on the "panic ceiling" — how fast the water can rise — 8 times before players stopped feeling frustrated and started feeling excited.`,
-
-    /* Placeholder screenshots — swap emoji+bg for real <img> tags later */
-    screenshots: [
-      { e:'🌊', bg:'linear-gradient(135deg,#0a2535,#1a4055)' },
-      { e:'🪸', bg:'linear-gradient(135deg,#0d3535,#1a5050)' },
-      { e:'💧', bg:'linear-gradient(135deg,#101828,#1a2840)' },
-    ],
-
-    tech: ['Unity 2022 LTS', 'C#', 'Unity DOTS', 'FMOD', 'Aseprite', 'Custom Water Shader'],
-
-    /* href: replace '#' with real URLs */
-    links: [
-      { label:'▶ PLAY ON ITCH.IO', color:'var(--cyan)',  href:'#' },
-      { label:'GITHUB',            color:'var(--gray)', href:'#' },
-      { label:'GDD PDF',           color:'var(--gray)', href:'#' },
-    ],
-  },
-
-  /* ── DREAM MERCHANT ──────────────────────────────────────── */
-  dreammerchant: {
-    cardTag:   'NARRATIVE RPG',
-    cardColor: 'var(--purple)',
-    cardEmoji: '🌙',
-    cardBg:    'linear-gradient(135deg,#3a1a4a,#1e0d2e)',
-    cardDesc:  'A top-down RPG about a shopkeeper who sells memories. Branching dialogue, original pixel art tileset.',
-
-    title:    'DREAM MERCHANT',
-    subtitle: 'Every memory has a price. What will you sell?',
-    tag:      'NARRATIVE RPG',
-    tagColor: 'var(--purple)',
-    accent:   'var(--purple)',
-    year:     '2024',
-    duration: '8 MONTHS',
-    team:     '3 PEOPLE',
-    engine:   'GODOT 4',
-    banner:   '🌙',
-    bannerBg: 'linear-gradient(135deg,#1e0d2e,#3a1a4a,#180920)',
-
-    overview: `Dream Merchant is a top-down narrative RPG where you play as a shopkeeper who trades in memories. Customers arrive with experiences they want to forget; your job is to appraise, purchase, and sometimes relive those memories through short vignette levels.`,
-    descExtra: `The project grew from a design challenge: what if the economy of a game was built entirely on intangible things? Instead of gold coins, you collect grief, nostalgia, and joy. The moral weight of each transaction is the game's main source of tension.`,
-
-    features: [
-      'Branching dialogue system with 200+ nodes and 6 possible endings',
-      'Memory vignettes — short playable flashbacks that contextualise each item',
-      'Reputation system that changes which customers trust you',
-      'Original 32×32 pixel art tileset (600+ tiles) drawn entirely in Aseprite',
-      "Dynamic shop music that layers based on which memories you've collected",
-    ],
-
-    designNotes: `Writing the dialogue was the most intensive part. I mapped every conversation in Twine first, then ported to Godot's custom dialogue manager. The six endings emerged naturally once the reputation system was in — I hadn't planned most of them originally.`,
-
-    screenshots: [
-      { e:'🌙', bg:'linear-gradient(135deg,#1e0d2e,#2e1a3e)' },
-      { e:'🏪', bg:'linear-gradient(135deg,#180920,#251240)' },
-      { e:'✨', bg:'linear-gradient(135deg,#0d0818,#1a1030)' },
-    ],
-
-    tech: ['Godot 4', 'GDScript', 'Twine (prototyping)', 'Aseprite', 'LMMS', 'Custom Dialogue Engine'],
-
-    links: [
-      { label:'▶ PLAY ON ITCH.IO', color:'var(--purple)', href:'#' },
-      { label:'DEVLOG',            color:'var(--gray)',   href:'#' },
-    ],
-  },
-
-  /* ── SPORE RUNNER ────────────────────────────────────────── */
-  sporerunner: {
-    cardTag:   'JAM GAME',
-    cardColor: 'var(--orange)',
-    cardEmoji: '🍄',
-    cardBg:    'linear-gradient(135deg,#3a2a0a,#1e1400)',
-    cardDesc:  '48-hour jam entry. Procedurally generated mushroom forest runner. Won Best Aesthetics at Ludum Dare.',
-
-    title:    'SPORE RUNNER',
-    subtitle: 'The forest grows faster than you can run.',
-    tag:      'JAM GAME',
-    tagColor: 'var(--orange)',
-    accent:   'var(--orange)',
-    year:     '2023',
-    duration: '48 HOURS',
-    team:     '2 PEOPLE',
-    engine:   'GODOT 3',
-    banner:   '🍄',
-    bannerBg: 'linear-gradient(135deg,#1e1400,#3a2a0a,#2a1c06)',
-
-    overview: `Spore Runner was built in 48 hours for Ludum Dare 54 (theme: "Limited Space"). You play as a spore drifting through a procedurally generated mycelial forest, collecting mushrooms before the canopy closes in. The faster you move, the more spores you spread — and the denser the forest becomes.`,
-    descExtra: `This was my first jam with a collaborator. I handled all design and level logic; my partner wrote the procedural generation algorithm. We shipped with 10 minutes to spare and somehow won Best Aesthetics.`,
-
-    features: [
-      'Procedurally generated forest using a custom L-system variant',
-      'Score multiplier chain mechanic that rewards risky routes',
-      'Reactive soundscape — instruments layer as more mushrooms are collected',
-      'Controller support added in post-jam update',
-      '3 difficulty seeds with curated random parameters',
-    ],
-
-    designNotes: `The "limited space" constraint forced the design — the shrinking forest was an obvious mechanic but executing the feel took most of our time. We tuned the canopy close speed for 6 hours straight. The final number is 0.4 units/sec and I will never forget it.`,
-
-    screenshots: [
-      { e:'🍄', bg:'linear-gradient(135deg,#2a1800,#3a2200)' },
-      { e:'🌲', bg:'linear-gradient(135deg,#1a2200,#283000)' },
-      { e:'✨', bg:'linear-gradient(135deg,#1e1400,#2a1c08)' },
-    ],
-
-    tech: ['Godot 3', 'GDScript', 'L-System Proc-Gen', 'Aseprite', 'BFXR (SFX)'],
-
-    links: [
-      { label:'▶ PLAY ON ITCH.IO',  color:'var(--orange)', href:'#' },
-      { label:'LUDUM DARE PAGE',    color:'var(--gray)',   href:'#' },
-    ],
-  },
-
-  /* ── ROOTBOUND ───────────────────────────────────────────── */
-  rootbound: {
-    cardTag:   'PUZZLE',
-    cardColor: 'var(--green)',
-    cardEmoji: '🌿',
-    cardBg:    'linear-gradient(135deg,#1a3a1a,#0d200d)',
-    cardDesc:  'A cozy gardening puzzle about untangling roots to let light through. Original music from real plant recordings.',
-
-    title:    'ROOTBOUND',
-    subtitle: 'Cozy puzzles. Tangled roots. Perfect silence.',
-    tag:      'PUZZLE',
-    tagColor: 'var(--green)',
-    accent:   'var(--green)',
-    year:     '2023',
-    duration: '4 MONTHS',
-    team:     'SOLO',
-    engine:   'GDEVELOP 5',
-    banner:   '🌿',
-    bannerBg: 'linear-gradient(135deg,#0d200d,#1a3a1a,#0a1a0a)',
-
-    overview: `Rootbound is a cozy gardening puzzle game about untangling roots to guide sunlight to sleeping seeds. Each puzzle is a knot of vines — rotate, flip, and redirect them to draw a path of light from the sun to the soil.`,
-    descExtra: `I built Rootbound as a palette cleanser between bigger projects. The goal was "one mechanic, done beautifully." No combat, no narrative pressure — just plants and patience. I also wrote all the original music using only samples recorded from my own houseplants (yes, really).`,
-
-    features: [
-      '40 handcrafted puzzle levels across 4 garden biomes',
-      'Hint system that illuminates one valid root segment without solving the puzzle',
-      'Original soundtrack recorded from real plant sounds and garden ambience',
-      'Colour-blind accessibility mode with distinct shapes per root type',
-      'Daily puzzle mode with cloud sync for returning players',
-    ],
-
-    designNotes: `The hardest part of puzzle design is calibrating difficulty without a slider. I playtested each level with 5 different people and timed them. Any level causing over 8 minutes of confusion was redesigned or moved later in the sequence.`,
-
-    screenshots: [
-      { e:'🌿', bg:'linear-gradient(135deg,#0d200d,#183018)' },
-      { e:'🌱', bg:'linear-gradient(135deg,#0a1a0a,#152015)' },
-      { e:'☀️', bg:'linear-gradient(135deg,#1a2a0a,#253510)' },
-    ],
-
-    tech: ['GDevelop 5', 'JavaScript', 'Aseprite', 'Audacity', 'Original Field Recordings'],
-
-    links: [
-      { label:'▶ PLAY ON ITCH.IO', color:'var(--green)', href:'#' },
-      { label:'DEVLOG',            color:'var(--gray)',  href:'#' },
-    ],
-  },
-
-  /* ── EMBER KNIGHT ────────────────────────────────────────── */
-  emberknight: {
+  /* ── BATTLE PLANES ───────────────────────────────────────── */
+  battleplanes: {
+    /* Card shown on the portfolio grid */
     cardTag:   'ACTION',
     cardColor: 'var(--pink)',
-    cardEmoji: '🔥',
-    cardBg:    'linear-gradient(135deg,#3a1a1a,#200d0d)',
-    cardDesc:  'A roguelite dungeon crawler with elemental combo mechanics. 60+ hand-crafted rooms. Built in Unity.',
+    cardImage: 'images/battleplanes.png',  /* path relative to index.html */
+    cardDesc:  'A 3D aerial combat game where players dogfight over lush island terrain. Built with custom flight physics.',
 
-    title:    'EMBER KNIGHT',
-    subtitle: 'Every run. Every element. Every death, a lesson.',
-    tag:      'ACTION ROGUELITE',
+    /* Detail page */
+    title:    'BATTLE PLANES',
+    subtitle: 'Take to the skies. Take down your enemies.',
+    tag:      'ACTION / FLIGHT',
     tagColor: 'var(--pink)',
     accent:   'var(--pink)',
     year:     '2024',
-    duration: '5 MONTHS',
+    duration: '4 MONTHS',
     team:     'SOLO',
     engine:   'UNITY',
-    banner:   '🔥',
-    bannerBg: 'linear-gradient(135deg,#200d0d,#3a1a1a,#280a0a)',
 
-    overview: `Ember Knight is a roguelite dungeon crawler where elemental combinations are the core combat language. Fire + Water = Steam. Ice + Lightning = Superconductor. Earth + Fire = Magma. Learning to chain elements across enemy types is the central skill curve.`,
-    descExtra: `I wanted to make a roguelite where death feels educational rather than punishing. Every run teaches you one new element interaction. The meta-progression is less about power and more about understanding — you unlock new knowledge, not just stats.`,
+    /* Banner image shown at the top of the detail panel */
+    bannerImage: 'images/battleplanes.png',
+
+    overview: `Battle Planes is a 3D aerial combat game set above a richly detailed island environment. Players pilot fighter planes in fast-paced dogfights, using custom flight physics to out-manoeuvre opponents across open skies and tight canyon runs.`,
+    descExtra: `The project started as an experiment in making flight feel intuitive without a flight stick. Every control parameter — lift, drag, roll sensitivity — was iterated from real player feedback until the planes felt arcade-satisfying while retaining a sense of weight.`,
 
     features: [
-      '12 element types with 28 unique interaction combos',
-      '60+ hand-crafted rooms assembled procedurally into dungeon layouts',
-      '8 boss encounters with adaptive phase transitions',
-      'Codex system that tracks discovered element combos with lore explanations',
-      'Run history visualiser showing route, deaths, and combo usage',
+      'Custom arcade flight physics with realistic lift and drag curves',
+      'Dynamic island environment with dense forest, cliffs, and open ocean',
+      'AI opponent with three difficulty levels using behaviour trees',
+      'Boost and barrel-roll mechanics for close-quarters dogfighting',
+      'Neon HUD overlaid on the 3D environment for a stylised feel',
     ],
 
-    designNotes: `Balancing 28 interactions is genuinely hard. I built a spreadsheet model of enemy health vs combo damage before writing a single line of combat code. The model was wrong in 12 places and I'm glad I found that out in a spreadsheet rather than Unity.`,
+    designNotes: `The biggest design challenge was the camera. Too close and the plane felt claustrophobic; too far and players lost spatial awareness. After 9 iterations I landed on a dynamic camera that pulls back during boosts and tightens during sharp turns.`,
 
+    /* Screenshots shown in the detail panel — add more as needed */
     screenshots: [
-      { e:'🔥', bg:'linear-gradient(135deg,#200d0d,#301010)' },
-      { e:'⚡', bg:'linear-gradient(135deg,#1a1a00,#2a2800)' },
-      { e:'❄️', bg:'linear-gradient(135deg,#0d1520,#151e2a)' },
+      { image: 'images/battleplanes.png', alt: 'Battle Planes title screen' },
     ],
 
-    tech: ['Unity 2022 LTS', 'C#', 'Aseprite', 'FMOD', 'Scriptable Object Architecture'],
+    tech: ['Unity 2022 LTS', 'C#', 'ProBuilder', 'Cinemachine', 'Unity VFX Graph'],
 
     links: [
-      { label:'▶ PLAY ON ITCH.IO', color:'var(--pink)', href:'#' },
-      { label:'GITHUB',            color:'var(--gray)', href:'#' },
-      { label:'GDD PDF',           color:'var(--gray)', href:'#' },
+      { label: '▶ PLAY DEMO',  color: 'var(--pink)', href: '#' },
+      { label: 'GITHUB',       color: 'var(--gray)', href: '#' },
     ],
   },
 
-  /* ── CLOCKWORK COVE ──────────────────────────────────────── */
-  clockworkcove: {
-    cardTag:   'PROTOTYPE',
-    cardColor: 'var(--yellow)',
-    cardEmoji: '⚙️',
-    cardBg:    'linear-gradient(135deg,#2a2a1a,#18180a)',
-    cardDesc:  'Steampunk exploration prototype. Environmental storytelling — every gear and mechanism tells the story.',
+  /* ── ANIWARS ─────────────────────────────────────────────── */
+  aniwars: {
+    cardTag:   'STRATEGY',
+    cardColor: 'var(--cyan)',
+    cardImage: 'images/aniwars.png',
+    cardDesc:  'A creature-collection strategy game where players battle with animated warriors. Think Pokémon meets tactics.',
 
-    title:    'CLOCKWORK COVE',
-    subtitle: 'The gears stopped. You need to find out why.',
-    tag:      'EXPLORATION PROTOTYPE',
-    tagColor: 'var(--yellow)',
-    accent:   'var(--yellow)',
+    title:    'ANIWARS',
+    subtitle: 'Every creature is a weapon. Choose wisely.',
+    tag:      'STRATEGY / CREATURE COLLECTOR',
+    tagColor: 'var(--cyan)',
+    accent:   'var(--cyan)',
     year:     '2024',
-    duration: '3 MONTHS',
-    team:     'SOLO',
-    engine:   'UNITY',
-    banner:   '⚙️',
-    bannerBg: 'linear-gradient(135deg,#18180a,#2a2a1a,#201e0a)',
+    duration: '5 MONTHS',
+    team:     '2 PEOPLE',
+    engine:   'GODOT 4',
 
-    overview: `Clockwork Cove is a steampunk exploration prototype about an abandoned clockwork harbour town where every gear, lever, and mechanism is a fragment of a story. There are no NPCs and no dialogue. The narrative is told entirely through the state of the machines.`,
-    descExtra: `This was a personal research project into environmental storytelling. The question: how much narrative information can be encoded in the physical state of objects, without a single written word? The prototype has 4 areas and approximately 35 minutes of environmental story if you read everything.`,
+    bannerImage: 'images/aniwars.png',
+
+    overview: `AniWars is a creature-collection strategy game where players build a roster of animated warriors and pit them against opponents in turn-based tactical battles. Each creature has a unique ability set and elemental affinity that rewards thoughtful team composition.`,
+    descExtra: `The name and logo came first — the pink oval framing felt playful and bold, immediately suggesting a game about personality as much as power. The design philosophy followed: every creature should feel distinct not just mechanically but visually and tonally.`,
 
     features: [
-      'Fully interactive clockwork environment — every mechanism has a history',
-      '35+ story fragments embedded in machine states, wear patterns, and debris',
-      'Interconnected gear puzzles that double as narrative reveals',
-      'Original steampunk pixel art aesthetic with animated machinery',
-      'Full design document (GDD) with 42-page world-building bible',
+      '20 unique creatures each with 3 signature abilities',
+      'Turn-based battle system with elemental type matchups',
+      'Roster-building meta with strategic team composition',
+      'Animated battle sprites with frame-by-frame attack sequences',
+      'Story campaign with 8 rival trainers and a final tournament arc',
     ],
 
-    designNotes: `Environmental storytelling lives or dies on the player's willingness to read the world. I ran extensive playtesting on "attention hooks" — asymmetry, unexplained wear, and scale breaks (a tiny chair in a giant room) were consistently the most effective.`,
+    designNotes: `Balancing 20 creatures is a combinatorial problem. I built a simulation that ran 10,000 random battles to surface outlier creatures — anything winning above 65% of matches got nerfed. Anything below 40% got a buff or a kit rework.`,
 
     screenshots: [
-      { e:'⚙️', bg:'linear-gradient(135deg,#18180a,#25250e)' },
-      { e:'🏭', bg:'linear-gradient(135deg,#151208,#201e0c)' },
-      { e:'🔩', bg:'linear-gradient(135deg,#1a160a,#252010)' },
+      { image: 'images/aniwars.png', alt: 'AniWars logo' },
     ],
 
-    tech: ['Unity 2022 LTS', 'C#', 'Aseprite', 'ProBuilder', 'Ink (Narrative Scripting)'],
+    tech: ['Godot 4', 'GDScript', 'Aseprite', 'Google Sheets (balance sim)', 'LMMS'],
 
     links: [
-      { label:'▶ PLAY DEMO', color:'var(--yellow)', href:'#' },
-      { label:'GDD PDF',     color:'var(--gray)',   href:'#' },
-      { label:'DEVLOG',      color:'var(--gray)',   href:'#' },
+      { label: '▶ PLAY ON ITCH.IO', color: 'var(--cyan)', href: '#' },
+      { label: 'DEVLOG',            color: 'var(--gray)', href: '#' },
+    ],
+  },
+
+  /* ── COFFEE GAME ─────────────────────────────────────────── */
+  coffeegame: {
+    cardTag:   'COZY / IDLE',
+    cardColor: 'var(--orange)',
+    cardImage: 'images/coffeegame.png',
+    cardDesc:  'A cozy pixel-art café management game. Brew drinks, serve customers, and upgrade your little coffee shop.',
+
+    title:    'CAFÉ PIXEL',
+    subtitle: 'One cup at a time.',
+    tag:      'COZY / MANAGEMENT',
+    tagColor: 'var(--orange)',
+    accent:   'var(--orange)',
+    year:     '2023',
+    duration: '3 MONTHS',
+    team:     'SOLO',
+    engine:   'GDEVELOP 5',
+
+    bannerImage: 'images/coffeegame.png',
+
+    overview: `Café Pixel is a cozy pixel-art café management game about running a tiny coffee shop. Players take orders, brew drinks with a mini timing mechanic, and spend earnings on shop upgrades — new equipment, decorations, and expanded menus.`,
+    descExtra: `The pixel mug logo captures the game's whole vibe: retro, warm, unpretentious. I wanted a game you could play with one hand while actually drinking coffee. Every mechanic was tested against that brief — if it required full attention, it got simplified.`,
+
+    features: [
+      'Drink-brewing mini-game with satisfying timing feedback',
+      '15 unlockable menu items across hot drinks, cold brews, and snacks',
+      'Customer satisfaction system affecting tips and repeat visitors',
+      'Shop decoration system with 40+ pixel art furniture pieces',
+      'Day/night cycle with different customer types and rush hour events',
+    ],
+
+    designNotes: `The hardest thing about cozy games is pacing. Too slow and players disengage; too busy and the cozy feeling evaporates. I found the sweet spot by capping simultaneous customers at 3 and making every brew action feel deliberate and satisfying rather than frantic.`,
+
+    screenshots: [
+      { image: 'images/coffeegame.png', alt: 'Café Pixel logo' },
+    ],
+
+    tech: ['GDevelop 5', 'JavaScript', 'Aseprite', 'Audacity', 'Tiled Map Editor'],
+
+    links: [
+      { label: '▶ PLAY ON ITCH.IO', color: 'var(--orange)', href: '#' },
+      { label: 'DEVLOG',            color: 'var(--gray)',   href: '#' },
+    ],
+  },
+
+  /* ── BOX IN ──────────────────────────────────────────────── */
+  boxin: {
+    cardTag:   'PUZZLE',
+    cardColor: 'var(--yellow)',
+    cardImage: 'images/boxin.png',
+    cardDesc:  'A minimalist cardboard-aesthetic puzzle game about fitting shapes into boxes. Simple rules, devious levels.',
+
+    title:    'BOX IN',
+    subtitle: 'Every shape has a place. Find it.',
+    tag:      'PUZZLE',
+    tagColor: 'var(--yellow)',
+    accent:   'var(--yellow)',
+    year:     '2023',
+    duration: '6 WEEKS',
+    team:     'SOLO',
+    engine:   'GODOT 3',
+
+    bannerImage: 'images/boxin.png',
+
+    overview: `Box In is a minimalist puzzle game about fitting irregularly shaped pieces into increasingly complex boxes. The visual language is deliberately tactile — everything looks like it was stamped and scrawled on cardboard, making the puzzles feel physical and satisfying to solve.`,
+    descExtra: `The logo — a coin-like stamp with "BOX IN" scratched into it — set the entire aesthetic direction. Rough, handmade, unpretentious. I leaned into that by avoiding any smooth animations or polished UI, keeping everything feeling like physical objects you're actually handling.`,
+
+    features: [
+      '30 puzzle levels scaling from approachable to fiendishly tricky',
+      'Rotate and flip mechanics for each piece',
+      'Cardboard-stamp visual style with hand-drawn textures',
+      'No timer, no fail state — pure spatial reasoning at your own pace',
+      'Unlockable challenge mode with fewer allowed moves per puzzle',
+    ],
+
+    designNotes: `I designed all 30 puzzles by hand on graph paper first, then digitised them. Levels 20–30 went through 3 full redesigns each — spatial puzzles are deceptively hard to calibrate. The rule I settled on: every puzzle should have exactly one "aha" moment.`,
+
+    screenshots: [
+      { image: 'images/boxin.png', alt: 'Box In logo' },
+    ],
+
+    tech: ['Godot 3', 'GDScript', 'Aseprite', 'Hand-drawn textures', 'BFXR (SFX)'],
+
+    links: [
+      { label: '▶ PLAY ON ITCH.IO', color: 'var(--yellow)', href: '#' },
+      { label: 'GITHUB',            color: 'var(--gray)',   href: '#' },
     ],
   },
 
