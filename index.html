@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zulfami Ashrafi — Game Designer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0f0e17;
+      --bg2: #1a1828;
+      --card: #1e1c2e;
+      --yellow: #ffe566;
+      --pink: #ff6bb5;
+      --cyan: #5ef0f0;
+      --green: #6ef98e;
+      --orange: #ff9b42;
+      --purple: #b97cff;
+      --white: #f4f0ff;
+      --gray: #7a7a9d;
+      --pixel: 'Press Start 2P', monospace;
+      --body: 'Nunito', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CUSTOM CURSOR */
+    #cursor {
+      width: 16px; height: 16px;
+      background: var(--yellow);
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      image-rendering: pixelated;
+      clip-path: polygon(0 0, 60% 0, 100% 40%, 100% 100%, 40% 100%, 0 60%);
+      transition: transform 0.1s;
+    }
+    #cursor-trail {
+      width: 8px; height: 8px;
+      background: var(--pink);
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      clip-path: polygon(0 0, 60% 0, 100% 40%, 100% 100%, 40% 100%, 0 60%);
+      opacity: 0.5;
+      transition: transform 0.2s, top 0.12s, left 0.12s;
+    }
+
+    /* SCANLINES OVERLAY */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.06) 2px,
+        rgba(0,0,0,0.06) 4px
+      );
+      pointer-events: none;
+      z-index: 9990;
+    }
+
+    /* PIXEL GRID BG */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2.5rem;
+      background: rgba(15,14,23,0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid rgba(255,229,102,0.15);
+    }
+    .nav-logo {
+      font-family: var(--pixel);
+      font-size: 0.55rem;
+      color: var(--yellow);
+      letter-spacing: 1px;
+      line-height: 1.6;
+    }
+    .nav-logo span { color: var(--pink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--pixel);
+      font-size: 0.45rem;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem 3rem;
+      overflow: hidden;
+    }
+
+    .hero-bg-shapes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .floating-pixel {
+      position: absolute;
+      image-rendering: pixelated;
+      animation: floatPixel linear infinite;
+      opacity: 0.18;
+    }
+    @keyframes floatPixel {
+      0% { transform: translateY(110vh) rotate(0deg); }
+      100% { transform: translateY(-20vh) rotate(360deg); }
+    }
+
+    .hero-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pixel-badge {
+      font-family: var(--pixel);
+      font-size: 0.5rem;
+      color: var(--green);
+      background: rgba(110,249,142,0.1);
+      border: 1px solid var(--green);
+      padding: 0.5rem 1rem;
+      letter-spacing: 2px;
+      animation: blink 1.2s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero-avatar {
+      width: 120px; height: 120px;
+      image-rendering: pixelated;
+      border: 4px solid var(--yellow);
+      background: var(--card);
+      position: relative;
+      box-shadow: 8px 8px 0 var(--pink), -4px -4px 0 var(--cyan);
+      animation: avatarBob 2s ease-in-out infinite;
+    }
+    @keyframes avatarBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .hero-avatar-inner {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+    }
+
+    h1.hero-name {
+      font-family: var(--pixel);
+      font-size: clamp(0.7rem, 2.5vw, 1.1rem);
+      color: var(--yellow);
+      line-height: 1.8;
+      letter-spacing: 2px;
+      text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 rgba(255,107,181,0.2);
+    }
+
+    .hero-title {
+      font-family: var(--pixel);
+      font-size: clamp(0.45rem, 1.2vw, 0.6rem);
+      color: var(--cyan);
+      letter-spacing: 3px;
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      font-size: 1rem;
+      color: #b0aeca;
+      line-height: 1.8;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    }
+    .btn {
+      font-family: var(--pixel);
+      font-size: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      cursor: none;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.1s, box-shadow 0.1s;
+      letter-spacing: 1px;
+      position: relative;
+    }
+    .btn:active { transform: translate(4px,4px) !important; box-shadow: none !important; }
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--bg);
+      box-shadow: 4px 4px 0 var(--orange);
+    }
+    .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--orange); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--pink);
+      border: 2px solid var(--pink);
+      box-shadow: 4px 4px 0 var(--purple);
+    }
+    .btn-secondary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--purple); }
+
+    /* SECTIONS SHARED */
+    section { position: relative; z-index: 1; padding: 5rem 2rem; }
+    .section-title {
+      font-family: var(--pixel);
+      font-size: clamp(0.65rem, 2vw, 0.9rem);
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+    .section-line {
+      height: 4px;
+      width: 60px;
+      margin-bottom: 3rem;
+    }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    /* ABOUT */
+    #about { background: var(--bg2); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .about-text h2 { color: var(--cyan); }
+    .about-text .section-line { background: var(--cyan); }
+    .about-text p {
+      color: #b0aeca;
+      line-height: 1.9;
+      font-size: 1.05rem;
+      margin-bottom: 1rem;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.07);
+      padding: 1.2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .stat-card:hover { border-color: var(--yellow); transform: translate(-3px,-3px); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .stat-card:nth-child(1)::before { background: var(--yellow); }
+    .stat-card:nth-child(2)::before { background: var(--pink); }
+    .stat-card:nth-child(3)::before { background: var(--cyan); }
+    .stat-card:nth-child(4)::before { background: var(--green); }
+    .stat-num {
+      font-family: var(--pixel);
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--gray);
+      font-family: var(--pixel);
+      font-size: 0.4rem;
+      letter-spacing: 1px;
+    }
+
+    /* PROJECTS */
+    #projects { background: var(--bg); }
+    #projects h2 { color: var(--yellow); }
+    #projects .section-line { background: var(--yellow); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: none;
+    }
+    .project-card:hover {
+      transform: translate(-4px,-4px);
+    }
+    .project-card:hover .project-thumb { filter: brightness(1.1); }
+    .project-thumb {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+      overflow: hidden;
+      transition: filter 0.3s;
+    }
+    .project-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(0,0,0,0.05) 0px,
+        rgba(0,0,0,0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+    }
+    .project-body { padding: 1.2rem; }
+    .project-tag {
+      font-family: var(--pixel);
+      font-size: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid;
+      display: inline-block;
+      margin-bottom: 0.7rem;
+      letter-spacing: 1px;
+    }
+    .project-body h3 {
+      font-family: var(--pixel);
+      font-size: 0.55rem;
+      margin-bottom: 0.6rem;
+      line-height: 1.7;
+      letter-spacing: 1px;
+    }
+    .project-body p {
+      color: #9997bb;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .project-links { display: flex; gap: 0.7rem; }
+    .project-link {
+      font-family: var(--pixel);
+      font-size: 0.4rem;
+      padding: 0.5rem 0.8rem;
+      text-decoration: none;
+      border: 1px solid;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 1px;
+    }
+
+    /* SKILLS */
+    #skills { background: var(--bg2); }
+    #skills h2 { color: var(--green); }
+    #skills .section-line { background: var(--green); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .skill-category {
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.06);
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-category:hover { border-color: var(--green); transform: translate(-3px,-3px); }
+    .skill-cat-title {
+      font-family: var(--pixel);
+      font-size: 0.45rem;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .skill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-chip {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.3rem 0.7rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--white);
+      border-radius: 0;
+      transition: background 0.15s;
+    }
+    .skill-chip:hover { background: rgba(255,255,255,0.1); }
+
+    /* SKILL BARS */
+    .skill-bar-list { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.5rem; }
+    .skill-bar-item { }
+    .skill-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+      color: #ccc;
+    }
+    .skill-bar-track {
+      height: 12px;
+      background: rgba(255,255,255,0.06);
+      position: relative;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      position: relative;
+      animation: fillBar 1.5s ease-out forwards;
+      transform-origin: left;
+    }
+    @keyframes fillBar {
+      from { width: 0; }
+    }
+    .skill-bar-track::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg, transparent, transparent 6px,
+        rgba(15,14,23,0.4) 6px, rgba(15,14,23,0.4) 8px
+      );
+    }
+
+    /* CONTACT */
+    #contact { background: var(--bg); }
+    #contact h2 { color: var(--purple); }
+    #contact .section-line { background: var(--purple); }
+    .contact-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .contact-inner p {
+      color: #b0aeca;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+    }
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .contact-card {
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.08);
+      padding: 1rem 1.5rem;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      transition: border-color 0.2s, transform 0.2s;
+      min-width: 120px;
+    }
+    .contact-card:hover { transform: translate(-3px,-3px); }
+    .contact-card .cc-icon { font-size: 1.8rem; }
+    .contact-card .cc-label {
+      font-family: var(--pixel);
+      font-size: 0.38rem;
+      letter-spacing: 1px;
+    }
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: left;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.08);
+      color: var(--white);
+      font-family: var(--body);
+      font-size: 0.95rem;
+      padding: 0.8rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--purple);
+    }
+    .contact-form textarea { min-height: 120px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg2);
+      border-top: 2px solid rgba(255,255,255,0.05);
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    footer p {
+      font-family: var(--pixel);
+      font-size: 0.4rem;
+      color: var(--gray);
+      letter-spacing: 1px;
+      line-height: 2;
+    }
+    footer span { color: var(--pink); }
+
+    /* PIXEL DIVIDER */
+    .pixel-divider {
+      width: 100%;
+      height: 8px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--yellow) 0, var(--yellow) 16px,
+        var(--pink) 16px, var(--pink) 32px,
+        var(--cyan) 32px, var(--cyan) 48px,
+        var(--green) 48px, var(--green) 64px,
+        var(--purple) 64px, var(--purple) 80px,
+        var(--orange) 80px, var(--orange) 96px
+      );
+      opacity: 0.35;
+      position: relative; z-index: 2;
+    }
+
+    /* SCROLL FADE IN */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 700px) {
+      .about-grid { grid-template-columns: 1fr; }
+      nav { padding: 1rem; }
+      .nav-links { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ZAW<br/><span>▶ GAME DESIGNER</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#projects">WORK</a></li>
+    <li><a href="#skills">SKILLS</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-shapes" id="pixelBg"></div>
+  <div class="hero-inner">
+    <div class="pixel-badge">▶ AVAILABLE FOR WORK ◀</div>
+    <div class="hero-avatar">
+      <div class="hero-avatar-inner">🎮</div>
+    </div>
+    <h1 class="hero-name">ZULFAMI ASHRAFI<br/>BIN WAKIF</h1>
+    <div class="hero-title">// GAME DESIGN STUDENT //</div>
+    <p class="hero-desc">
+      Crafting worlds, mechanics, and experiences that players remember.
+      Passionate about indie games, pixel art, and the stories levels tell.
+    </p>
+    <div class="hero-ctas">
+      <a href="#projects" class="btn btn-primary">▶ SEE MY WORK</a>
+      <a href="#contact" class="btn btn-secondary">✉ GET IN TOUCH</a>
+    </div>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <h2 class="section-title">ABOUT ME</h2>
+        <div class="section-line"></div>
+        <p>
+          Hey! I'm Zulfami — a game design student who fell in love with games
+          long before I understood how they were made. Now I'm obsessed with
+          <em>why</em> certain mechanics feel amazing and how a single level
+          can tell an entire story.
+        </p>
+        <p>
+          I specialise in game feel, level design, and narrative systems.
+          Whether it's a cozy pixel platformer or a tightly-tuned puzzle,
+          I want every moment to feel intentional and fun.
+        </p>
+        <a href="#projects" class="btn btn-primary" style="margin-top:1rem;">VIEW PROJECTS</a>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <span class="stat-num" style="color:var(--yellow)">8+</span>
+          <span class="stat-label">PROJECTS SHIPPED</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" style="color:var(--pink)">3</span>
+          <span class="stat-label">GAME JAMS WON</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" style="color:var(--cyan)">2+</span>
+          <span class="stat-label">YEARS DESIGNING</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" style="color:var(--green)">∞</span>
+          <span class="stat-label">HOURS OF PLAYTESTING</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <h2 class="section-title reveal">MY PROJECTS</h2>
+    <div class="section-line reveal" style="background:var(--yellow);"></div>
+    <div class="projects-grid">
+
+      <div class="project-card reveal" style="--hover-color:var(--cyan)">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#1a3a4f,#0d2030)">🌊</div>
+        <div class="project-body">
+          <span class="project-tag" style="color:var(--cyan);border-color:var(--cyan)">PLATFORMER</span>
+          <h3 style="color:var(--white)">TIDEWALKER</h3>
+          <p>A fluid-based puzzle platformer where the tide rises with your heart rate. Designed in Unity with custom shader-based water physics.</p>
+          <div class="project-links">
+            <a href="#" class="project-link" style="color:var(--cyan);border-color:var(--cyan)">▶ PLAY</a>
+            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">GITHUB</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.1s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#3a1a4a,#1e0d2e)">🌙</div>
+        <div class="project-body">
+          <span class="project-tag" style="color:var(--purple);border-color:var(--purple)">NARRATIVE RPG</span>
+          <h3 style="color:var(--white)">DREAM MERCHANT</h3>
+          <p>A top-down RPG about a shopkeeper who sells memories. Features a branching dialogue system and a fully original pixel art tileset.</p>
+          <div class="project-links">
+            <a href="#" class="project-link" style="color:var(--purple);border-color:var(--purple)">▶ PLAY</a>
+            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">ITCH.IO</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.2s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#3a2a0a,#1e1400)">🍄</div>
+        <div class="project-body">
+          <span class="project-tag" style="color:var(--orange);border-color:var(--orange)">JAM GAME</span>
+          <h3 style="color:var(--white)">SPORE RUNNER</h3>
+          <p>48-hour game jam entry. A fast-paced mushroom-collecting runner with procedurally generated forests. Won Best Aesthetics.</p>
+          <div class="project-links">
+            <a href="#" class="project-link" style="color:var(--orange);border-color:var(--orange)">▶ PLAY</a>
+            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">DEVLOG</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.3s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#1a3a1a,#0d200d)">🌿</div>
+        <div class="project-body">
+          <span class="project-tag" style="color:var(--green);border-color:var(--green)">PUZZLE</span>
+          <h3 style="color:var(--white)">ROOTBOUND</h3>
+          <p>A cozy gardening puzzle game about untangling roots to let light through. Designed entirely in GDevelop with original music.</p>
+          <div class="project-links">
+            <a href="#" class="project-link" style="color:var(--green);border-color:var(--green)">▶ PLAY</a>
+            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">ITCH.IO</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.15s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#3a1a1a,#200d0d)">🔥</div>
+        <div class="project-body">
+          <span class="project-tag" style="color:var(--pink);border-color:var(--pink)">ACTION</span>
+          <h3 style="color:var(--white)">EMBER KNIGHT</h3>
+          <p>A roguelite dungeon crawler with elemental combo mechanics. Each run remixes 60+ hand-crafted rooms. Built in Unity with C#.</p>
+          <div class="project-links">
+            <a href="#" class="project-link" style="color:var(--pink);border-color:var(--pink)">▶ PLAY</a>
+            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">GITHUB</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.25s">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#2a2a1a,#18180a)">⚙️</div>
+        <div class="project-body">
+          <span class="project-tag" style="color:var(--yellow);border-color:var(--yellow)">PROTOTYPE</span>
+          <h3 style="color:var(--white)">CLOCKWORK COVE</h3>
+          <p>A steampunk exploration prototype focused on environmental storytelling. Every gear and mechanism tells part of the narrative.</p>
+          <div class="project-links">
+            <a href="#" class="project-link" style="color:var(--yellow);border-color:var(--yellow)">▶ DEMO</a>
+            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">GDD PDF</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <h2 class="section-title reveal">SKILLS & TOOLS</h2>
+    <div class="section-line reveal" style="background:var(--green);"></div>
+    <div class="skills-grid">
+
+      <div class="skill-category reveal">
+        <div class="skill-cat-title" style="color:var(--yellow)">🎮 GAME ENGINES</div>
+        <div class="skill-bar-list">
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>Unity</span><span>85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%;background:var(--yellow)"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>Godot</span><span>70%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%;background:var(--yellow)"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>GDevelop</span><span>60%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%;background:var(--yellow)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-category reveal" style="transition-delay:0.1s">
+        <div class="skill-cat-title" style="color:var(--pink)">🎨 ART & PIXEL ART</div>
+        <div class="skill-bar-list">
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>Aseprite</span><span>90%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%;background:var(--pink)"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>Photoshop</span><span>65%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:65%;background:var(--pink)"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>Figma</span><span>55%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:55%;background:var(--pink)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-category reveal" style="transition-delay:0.2s">
+        <div class="skill-cat-title" style="color:var(--cyan)">💻 PROGRAMMING</div>
+        <div class="skill-bar-list">
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>C# (Unity)</span><span>80%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%;background:var(--cyan)"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>GDScript</span><span>70%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%;background:var(--cyan)"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-label"><span>Python</span><span>50%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%;background:var(--cyan)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-category reveal" style="transition-delay:0.3s">
+        <div class="skill-cat-title" style="color:var(--green)">📐 DESIGN SKILLS</div>
+        <div class="skill-list">
+          <span class="skill-chip">Level Design</span>
+          <span class="skill-chip">Game Feel</span>
+          <span class="skill-chip">Narrative Design</span>
+          <span class="skill-chip">Prototyping</span>
+          <span class="skill-chip">Playtesting</span>
+          <span class="skill-chip">GDD Writing</span>
+          <span class="skill-chip">UI/UX</span>
+          <span class="skill-chip">World Building</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-inner reveal">
+      <h2 class="section-title">LET'S COLLAB</h2>
+      <div class="section-line" style="background:var(--purple);margin:0.5rem auto 2rem;"></div>
+      <p>
+        Whether it's a game jam team, a freelance project, or just talking
+        about why Celeste has the best game feel ever — my inbox is open.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:zulfami@email.com" class="contact-card" style="border-color:rgba(185,124,255,0.3)">
+          <div class="cc-icon">✉️</div>
+          <div class="cc-label" style="color:var(--purple)">EMAIL</div>
+        </a>
+        <a href="https://github.com/" class="contact-card" style="border-color:rgba(255,229,102,0.3)">
+          <div class="cc-icon">🐙</div>
+          <div class="cc-label" style="color:var(--yellow)">GITHUB</div>
+        </a>
+        <a href="https://itch.io/" class="contact-card" style="border-color:rgba(255,107,181,0.3)">
+          <div class="cc-icon">🎮</div>
+          <div class="cc-label" style="color:var(--pink)">ITCH.IO</div>
+        </a>
+        <a href="https://linkedin.com/" class="contact-card" style="border-color:rgba(94,240,240,0.3)">
+          <div class="cc-icon">💼</div>
+          <div class="cc-label" style="color:var(--cyan)">LINKEDIN</div>
+        </a>
+      </div>
+      <div class="contact-form">
+        <input type="text" placeholder="Your name" />
+        <input type="email" placeholder="Your email" />
+        <textarea placeholder="What's on your mind?"></textarea>
+        <button class="btn btn-primary" style="align-self:flex-start">▶ SEND MESSAGE</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 ZULFAMI ASHRAFI BIN WAKIF — MADE WITH <span>♥</span> & LOTS OF PIXELS</p>
+  <p style="margin-top:0.5rem">PRESS START TO PLAY LIFE</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursor-trail');
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.top = (my - 8) + 'px';
+    cursor.style.left = (mx - 8) + 'px';
+    setTimeout(() => {
+      trail.style.top = (my - 4) + 'px';
+      trail.style.left = (mx - 4) + 'px';
+    }, 80);
+  });
+
+  // Floating pixels background
+  const colors = ['#ffe566','#ff6bb5','#5ef0f0','#6ef98e','#b97cff','#ff9b42'];
+  const shapes = ['▪','■','▲','◆','●','★'];
+  const bg = document.getElementById('pixelBg');
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'floating-pixel';
+    el.textContent = shapes[Math.floor(Math.random()*shapes.length)];
+    el.style.cssText = `
+      left:${Math.random()*100}%;
+      font-size:${8+Math.random()*20}px;
+      color:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${8+Math.random()*18}s;
+      animation-delay:${-Math.random()*20}s;
+    `;
+    bg.appendChild(el);
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
