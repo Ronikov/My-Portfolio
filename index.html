@@ -7,579 +7,212 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #0f0e17;
-      --bg2: #1a1828;
-      --card: #1e1c2e;
-      --yellow: #ffe566;
-      --pink: #ff6bb5;
-      --cyan: #5ef0f0;
-      --green: #6ef98e;
-      --orange: #ff9b42;
-      --purple: #b97cff;
-      --white: #f4f0ff;
-      --gray: #7a7a9d;
-      --pixel: 'Press Start 2P', monospace;
-      --body: 'Nunito', sans-serif;
+      --bg: #0f0e17; --bg2: #1a1828; --card: #1e1c2e;
+      --yellow: #ffe566; --pink: #ff6bb5; --cyan: #5ef0f0;
+      --green: #6ef98e; --orange: #ff9b42; --purple: #b97cff;
+      --white: #f4f0ff; --gray: #7a7a9d;
+      --pixel: 'Press Start 2P', monospace; --body: 'Nunito', sans-serif;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: var(--body); overflow-x: hidden; cursor: none; }
 
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: var(--body);
-      overflow-x: hidden;
-      cursor: none;
-    }
+    #cursor { width:16px;height:16px;background:var(--yellow);position:fixed;top:0;left:0;pointer-events:none;z-index:9999;clip-path:polygon(0 0,60% 0,100% 40%,100% 100%,40% 100%,0 60%); }
+    #cursor-trail { width:8px;height:8px;background:var(--pink);position:fixed;top:0;left:0;pointer-events:none;z-index:9998;clip-path:polygon(0 0,60% 0,100% 40%,100% 100%,40% 100%,0 60%);opacity:0.5; }
 
-    /* CUSTOM CURSOR */
-    #cursor {
-      width: 16px; height: 16px;
-      background: var(--yellow);
-      position: fixed;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      image-rendering: pixelated;
-      clip-path: polygon(0 0, 60% 0, 100% 40%, 100% 100%, 40% 100%, 0 60%);
-      transition: transform 0.1s;
-    }
-    #cursor-trail {
-      width: 8px; height: 8px;
-      background: var(--pink);
-      position: fixed;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9998;
-      clip-path: polygon(0 0, 60% 0, 100% 40%, 100% 100%, 40% 100%, 0 60%);
-      opacity: 0.5;
-      transition: transform 0.2s, top 0.12s, left 0.12s;
-    }
+    body::after { content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);pointer-events:none;z-index:9990; }
+    body::before { content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0; }
 
-    /* SCANLINES OVERLAY */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.06) 2px,
-        rgba(0,0,0,0.06) 4px
-      );
-      pointer-events: none;
-      z-index: 9990;
-    }
+    nav { position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:1rem 2.5rem;background:rgba(15,14,23,0.9);backdrop-filter:blur(8px);border-bottom:2px solid rgba(255,229,102,0.15); }
+    .nav-logo { font-family:var(--pixel);font-size:0.55rem;color:var(--yellow);letter-spacing:1px;line-height:1.6; }
+    .nav-logo span { color:var(--pink); }
+    .nav-links { display:flex;gap:2rem;list-style:none; }
+    .nav-links a { font-family:var(--pixel);font-size:0.45rem;color:var(--gray);text-decoration:none;letter-spacing:1px;transition:color 0.2s; }
+    .nav-links a:hover { color:var(--cyan); }
 
-    /* PIXEL GRID BG */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none;
-      z-index: 0;
-    }
+    #hero { min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;padding:6rem 2rem 3rem;overflow:hidden; }
+    .hero-bg-shapes { position:absolute;inset:0;pointer-events:none;overflow:hidden; }
+    .floating-pixel { position:absolute;animation:floatPixel linear infinite;opacity:0.18; }
+    @keyframes floatPixel { 0%{transform:translateY(110vh) rotate(0deg)}100%{transform:translateY(-20vh) rotate(360deg)} }
+    .hero-inner { display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.5rem;position:relative;z-index:2; }
+    .pixel-badge { font-family:var(--pixel);font-size:0.5rem;color:var(--green);background:rgba(110,249,142,0.1);border:1px solid var(--green);padding:0.5rem 1rem;letter-spacing:2px;animation:blink 1.2s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+    .hero-avatar { width:120px;height:120px;border:4px solid var(--yellow);background:var(--card);box-shadow:8px 8px 0 var(--pink),-4px -4px 0 var(--cyan);animation:avatarBob 2s ease-in-out infinite; }
+    @keyframes avatarBob { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+    .hero-avatar-inner { width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem; }
+    h1.hero-name { font-family:var(--pixel);font-size:clamp(0.7rem,2.5vw,1.1rem);color:var(--yellow);line-height:1.8;letter-spacing:2px;text-shadow:4px 4px 0 var(--pink),8px 8px 0 rgba(255,107,181,0.2); }
+    .hero-title { font-family:var(--pixel);font-size:clamp(0.45rem,1.2vw,0.6rem);color:var(--cyan);letter-spacing:3px; }
+    .hero-desc { max-width:520px;font-size:1rem;color:#b0aeca;line-height:1.8; }
+    .hero-ctas { display:flex;gap:1rem;flex-wrap:wrap;justify-content:center; }
 
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2.5rem;
-      background: rgba(15,14,23,0.85);
-      backdrop-filter: blur(8px);
-      border-bottom: 2px solid rgba(255,229,102,0.15);
-    }
-    .nav-logo {
-      font-family: var(--pixel);
-      font-size: 0.55rem;
-      color: var(--yellow);
-      letter-spacing: 1px;
-      line-height: 1.6;
-    }
-    .nav-logo span { color: var(--pink); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      font-family: var(--pixel);
-      font-size: 0.45rem;
-      color: var(--gray);
-      text-decoration: none;
-      letter-spacing: 1px;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--cyan); }
+    .btn { font-family:var(--pixel);font-size:0.5rem;padding:0.8rem 1.5rem;border:none;cursor:none;text-decoration:none;display:inline-block;transition:transform 0.1s,box-shadow 0.1s;letter-spacing:1px; }
+    .btn:active { transform:translate(4px,4px)!important;box-shadow:none!important; }
+    .btn-primary { background:var(--yellow);color:var(--bg);box-shadow:4px 4px 0 var(--orange); }
+    .btn-primary:hover { transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--orange); }
+    .btn-secondary { background:transparent;color:var(--pink);border:2px solid var(--pink);box-shadow:4px 4px 0 var(--purple); }
+    .btn-secondary:hover { transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--purple); }
 
-    /* HERO */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
-      padding: 6rem 2rem 3rem;
-      overflow: hidden;
-    }
+    section { position:relative;z-index:1;padding:5rem 2rem; }
+    .section-title { font-family:var(--pixel);font-size:clamp(0.65rem,2vw,0.9rem);letter-spacing:2px;margin-bottom:0.5rem; }
+    .section-line { height:4px;width:60px;margin-bottom:3rem; }
+    .section-inner { max-width:1100px;margin:0 auto; }
 
-    .hero-bg-shapes {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
+    #about { background:var(--bg2); }
+    .about-grid { display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center; }
+    .about-text p { color:#b0aeca;line-height:1.9;font-size:1.05rem;margin-bottom:1rem; }
+    .about-stats { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+    .stat-card { background:var(--card);border:2px solid rgba(255,255,255,0.07);padding:1.2rem;text-align:center;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s; }
+    .stat-card:hover { border-color:var(--yellow);transform:translate(-3px,-3px); }
+    .stat-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px; }
+    .stat-card:nth-child(1)::before{background:var(--yellow)}.stat-card:nth-child(2)::before{background:var(--pink)}.stat-card:nth-child(3)::before{background:var(--cyan)}.stat-card:nth-child(4)::before{background:var(--green)}
+    .stat-num { font-family:var(--pixel);font-size:1.2rem;display:block;margin-bottom:0.3rem; }
+    .stat-label { font-family:var(--pixel);font-size:0.4rem;color:var(--gray);letter-spacing:1px; }
+
+    #projects { background:var(--bg); }
+    .projects-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem; }
+    .project-card { background:var(--card);border:2px solid rgba(255,255,255,0.06);position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s;cursor:none; }
+    .project-card:hover { transform:translate(-4px,-4px); }
+    .project-card:hover .project-thumb { filter:brightness(1.15); }
+    .project-card:hover .card-hover-hint { opacity:1; }
+    .project-thumb { width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden;transition:filter 0.3s; }
+    .project-thumb::after { content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(0,0,0,0.05) 0px,rgba(0,0,0,0.05) 2px,transparent 2px,transparent 4px); }
+    .card-hover-hint { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,14,23,0.75);font-family:var(--pixel);font-size:0.45rem;letter-spacing:2px;color:var(--yellow);opacity:0;transition:opacity 0.25s;z-index:3;pointer-events:none; }
+    .project-body { padding:1.2rem; }
+    .project-tag { font-family:var(--pixel);font-size:0.35rem;padding:0.25rem 0.6rem;border:1px solid;display:inline-block;margin-bottom:0.7rem;letter-spacing:1px; }
+    .project-body h3 { font-family:var(--pixel);font-size:0.55rem;margin-bottom:0.6rem;line-height:1.7;letter-spacing:1px; }
+    .project-body p { color:#9997bb;font-size:0.9rem;line-height:1.7;margin-bottom:1rem; }
+    .view-details-btn { font-family:var(--pixel);font-size:0.4rem;padding:0.5rem 0.9rem;border:1px solid;display:inline-block;letter-spacing:1px;transition:background 0.15s; }
+
+    #skills { background:var(--bg2); }
+    .skills-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem; }
+    .skill-category { background:var(--card);border:2px solid rgba(255,255,255,0.06);padding:1.5rem;transition:border-color 0.2s,transform 0.2s; }
+    .skill-category:hover { border-color:var(--green);transform:translate(-3px,-3px); }
+    .skill-cat-title { font-family:var(--pixel);font-size:0.45rem;letter-spacing:2px;margin-bottom:1rem; }
+    .skill-list { display:flex;flex-wrap:wrap;gap:0.5rem; }
+    .skill-chip { font-size:0.8rem;font-weight:700;padding:0.3rem 0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--white); }
+    .skill-bar-list { display:flex;flex-direction:column;gap:0.8rem; }
+    .skill-bar-label { display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.3rem;color:#ccc; }
+    .skill-bar-track { height:12px;background:rgba(255,255,255,0.06);position:relative; }
+    .skill-bar-fill { height:100%;animation:fillBar 1.5s ease-out forwards; }
+    @keyframes fillBar { from{width:0} }
+    .skill-bar-track::after { content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 6px,rgba(15,14,23,0.4) 6px,rgba(15,14,23,0.4) 8px); }
+
+    #contact { background:var(--bg); }
+    .contact-inner { max-width:600px;margin:0 auto;text-align:center; }
+    .contact-inner p { color:#b0aeca;line-height:1.8;margin-bottom:2rem;font-size:1.05rem; }
+    .contact-links { display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:2.5rem; }
+    .contact-card { background:var(--card);border:2px solid rgba(255,255,255,0.08);padding:1rem 1.5rem;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:0.4rem;transition:border-color 0.2s,transform 0.2s;min-width:120px; }
+    .contact-card:hover { transform:translate(-3px,-3px); }
+    .contact-card .cc-icon { font-size:1.8rem; }
+    .contact-card .cc-label { font-family:var(--pixel);font-size:0.38rem;letter-spacing:1px; }
+    .contact-form { display:flex;flex-direction:column;gap:1rem;text-align:left; }
+    .contact-form input,.contact-form textarea { background:var(--card);border:2px solid rgba(255,255,255,0.08);color:var(--white);font-family:var(--body);font-size:0.95rem;padding:0.8rem 1rem;outline:none;transition:border-color 0.2s;resize:vertical; }
+    .contact-form input:focus,.contact-form textarea:focus { border-color:var(--purple); }
+    .contact-form textarea { min-height:120px; }
+
+    footer { background:var(--bg2);border-top:2px solid rgba(255,255,255,0.05);padding:2rem;text-align:center;position:relative;z-index:1; }
+    footer p { font-family:var(--pixel);font-size:0.4rem;color:var(--gray);letter-spacing:1px;line-height:2; }
+    footer span { color:var(--pink); }
+
+    .pixel-divider { width:100%;height:8px;background:repeating-linear-gradient(90deg,var(--yellow) 0,var(--yellow) 16px,var(--pink) 16px,var(--pink) 32px,var(--cyan) 32px,var(--cyan) 48px,var(--green) 48px,var(--green) 64px,var(--purple) 64px,var(--purple) 80px,var(--orange) 80px,var(--orange) 96px);opacity:0.35;position:relative;z-index:2; }
+
+    .reveal { opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease; }
+    .reveal.visible { opacity:1;transform:none; }
+
+    /* ═══════════ GAME DETAIL OVERLAY ═══════════ */
+    #game-overlay {
+      position:fixed;inset:0;z-index:1000;
+      display:flex;pointer-events:none;opacity:0;
+      transition:opacity 0.3s ease;
     }
-    .floating-pixel {
-      position: absolute;
-      image-rendering: pixelated;
-      animation: floatPixel linear infinite;
-      opacity: 0.18;
-    }
-    @keyframes floatPixel {
-      0% { transform: translateY(110vh) rotate(0deg); }
-      100% { transform: translateY(-20vh) rotate(360deg); }
+    #game-overlay.open { opacity:1;pointer-events:all; }
+
+    .overlay-backdrop {
+      position:absolute;inset:0;
+      background:rgba(5,4,12,0.85);
+      backdrop-filter:blur(6px);
     }
 
-    .hero-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 1.5rem;
-      position: relative;
-      z-index: 2;
+    .overlay-panel {
+      position:relative;z-index:2;
+      width:min(860px,100%);height:100%;
+      margin-left:auto;
+      background:var(--bg);
+      border-left:3px solid rgba(255,255,255,0.07);
+      overflow-y:auto;
+      transform:translateX(100%);
+      transition:transform 0.42s cubic-bezier(0.22,1,0.36,1);
+      scrollbar-width:thin;scrollbar-color:var(--gray) transparent;
     }
+    #game-overlay.open .overlay-panel { transform:translateX(0); }
 
-    .pixel-badge {
-      font-family: var(--pixel);
-      font-size: 0.5rem;
-      color: var(--green);
-      background: rgba(110,249,142,0.1);
-      border: 1px solid var(--green);
-      padding: 0.5rem 1rem;
-      letter-spacing: 2px;
-      animation: blink 1.2s step-end infinite;
+    .overlay-close {
+      position:sticky;top:0;z-index:10;
+      display:flex;align-items:center;gap:1rem;
+      padding:0.9rem 1.5rem;
+      background:rgba(15,14,23,0.96);
+      border-bottom:2px solid rgba(255,255,255,0.07);
+      backdrop-filter:blur(8px);
     }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    .close-btn {
+      font-family:var(--pixel);font-size:0.45rem;
+      color:var(--gray);background:none;
+      border:1px solid rgba(255,255,255,0.15);
+      padding:0.5rem 0.9rem;cursor:none;letter-spacing:1px;
+      transition:color 0.2s,border-color 0.2s;
     }
+    .close-btn:hover { color:var(--yellow);border-color:var(--yellow); }
+    .overlay-breadcrumb { font-family:var(--pixel);font-size:0.38rem;color:var(--gray);letter-spacing:1px; }
+    .overlay-breadcrumb span { color:var(--white); }
 
-    .hero-avatar {
-      width: 120px; height: 120px;
-      image-rendering: pixelated;
-      border: 4px solid var(--yellow);
-      background: var(--card);
-      position: relative;
-      box-shadow: 8px 8px 0 var(--pink), -4px -4px 0 var(--cyan);
-      animation: avatarBob 2s ease-in-out infinite;
+    .game-banner {
+      width:100%;height:260px;
+      display:flex;align-items:center;justify-content:center;font-size:7rem;
+      position:relative;overflow:hidden;
     }
-    @keyframes avatarBob {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    .hero-avatar-inner {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3.5rem;
-    }
+    .game-banner::before { content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(0,0,0,0.07) 0,rgba(0,0,0,0.07) 2px,transparent 2px,transparent 4px); }
+    .game-banner::after { content:'';position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(transparent,var(--bg)); }
 
-    h1.hero-name {
-      font-family: var(--pixel);
-      font-size: clamp(0.7rem, 2.5vw, 1.1rem);
-      color: var(--yellow);
-      line-height: 1.8;
-      letter-spacing: 2px;
-      text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 rgba(255,107,181,0.2);
-    }
+    .game-content { padding:2rem 2rem 4rem; }
 
-    .hero-title {
-      font-family: var(--pixel);
-      font-size: clamp(0.45rem, 1.2vw, 0.6rem);
-      color: var(--cyan);
-      letter-spacing: 3px;
-    }
+    .game-tag-row { display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:0.8rem; }
+    .game-tag { font-family:var(--pixel);font-size:0.35rem;padding:0.3rem 0.7rem;border:1px solid;letter-spacing:1px; }
+    .game-year-badge { font-family:var(--pixel);font-size:0.35rem;color:var(--gray);letter-spacing:1px; }
+    .game-title { font-family:var(--pixel);font-size:clamp(0.8rem,3vw,1.2rem);line-height:1.7;letter-spacing:2px;margin-bottom:0.4rem; }
+    .game-subtitle { font-size:1.05rem;color:var(--gray);font-style:italic;margin-bottom:1.5rem; }
 
-    .hero-desc {
-      max-width: 520px;
-      font-size: 1rem;
-      color: #b0aeca;
-      line-height: 1.8;
-    }
+    .game-meta { display:flex;flex-wrap:wrap;gap:1px;margin:1.5rem 0;border:1px solid rgba(255,255,255,0.07); }
+    .game-meta-item { flex:1;min-width:110px;padding:0.9rem 1rem;background:var(--card);text-align:center; }
+    .gmi-label { font-family:var(--pixel);font-size:0.32rem;color:var(--gray);letter-spacing:1px;display:block;margin-bottom:0.4rem; }
+    .gmi-val { font-family:var(--pixel);font-size:0.55rem;display:block; }
 
-    .hero-ctas {
-      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
-    }
-    .btn {
-      font-family: var(--pixel);
-      font-size: 0.5rem;
-      padding: 0.8rem 1.5rem;
-      border: none;
-      cursor: none;
-      text-decoration: none;
-      display: inline-block;
-      transition: transform 0.1s, box-shadow 0.1s;
-      letter-spacing: 1px;
-      position: relative;
-    }
-    .btn:active { transform: translate(4px,4px) !important; box-shadow: none !important; }
-    .btn-primary {
-      background: var(--yellow);
-      color: var(--bg);
-      box-shadow: 4px 4px 0 var(--orange);
-    }
-    .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--orange); }
-    .btn-secondary {
-      background: transparent;
-      color: var(--pink);
-      border: 2px solid var(--pink);
-      box-shadow: 4px 4px 0 var(--purple);
-    }
-    .btn-secondary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--purple); }
+    .game-section { margin-bottom:2rem; }
+    .game-section-title { font-family:var(--pixel);font-size:0.48rem;letter-spacing:2px;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid rgba(255,255,255,0.07); }
+    .game-section p { color:#b0aeca;line-height:1.9;font-size:1rem;margin-bottom:0.8rem; }
+    .game-section ul { list-style:none;display:flex;flex-direction:column;gap:0.6rem; }
+    .game-section li { color:#b0aeca;font-size:0.95rem;padding-left:1.3rem;position:relative;line-height:1.7; }
+    .game-section li::before { content:'▸';position:absolute;left:0; }
 
-    /* SECTIONS SHARED */
-    section { position: relative; z-index: 1; padding: 5rem 2rem; }
-    .section-title {
-      font-family: var(--pixel);
-      font-size: clamp(0.65rem, 2vw, 0.9rem);
-      letter-spacing: 2px;
-      margin-bottom: 0.5rem;
-    }
-    .section-line {
-      height: 4px;
-      width: 60px;
-      margin-bottom: 3rem;
-    }
-    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .screenshots { display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin:1.5rem 0; }
+    .screenshot { aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:2.5rem;border:2px solid rgba(255,255,255,0.07);position:relative;overflow:hidden; }
+    .screenshot::after { content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(0,0,0,0.06) 0,rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px); }
 
-    /* ABOUT */
-    #about { background: var(--bg2); }
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-    }
-    .about-text h2 { color: var(--cyan); }
-    .about-text .section-line { background: var(--cyan); }
-    .about-text p {
-      color: #b0aeca;
-      line-height: 1.9;
-      font-size: 1.05rem;
-      margin-bottom: 1rem;
-    }
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .stat-card {
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.07);
-      padding: 1.2rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .stat-card:hover { border-color: var(--yellow); transform: translate(-3px,-3px); }
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-    }
-    .stat-card:nth-child(1)::before { background: var(--yellow); }
-    .stat-card:nth-child(2)::before { background: var(--pink); }
-    .stat-card:nth-child(3)::before { background: var(--cyan); }
-    .stat-card:nth-child(4)::before { background: var(--green); }
-    .stat-num {
-      font-family: var(--pixel);
-      font-size: 1.2rem;
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .stat-label {
-      font-size: 0.75rem;
-      color: var(--gray);
-      font-family: var(--pixel);
-      font-size: 0.4rem;
-      letter-spacing: 1px;
-    }
+    .tech-list { display:flex;flex-wrap:wrap;gap:0.5rem; }
+    .tech-chip { font-family:var(--pixel);font-size:0.35rem;padding:0.35rem 0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);letter-spacing:1px; }
 
-    /* PROJECTS */
-    #projects { background: var(--bg); }
-    #projects h2 { color: var(--yellow); }
-    #projects .section-line { background: var(--yellow); }
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-    .project-card {
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.06);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
-      cursor: none;
-    }
-    .project-card:hover {
-      transform: translate(-4px,-4px);
-    }
-    .project-card:hover .project-thumb { filter: brightness(1.1); }
-    .project-thumb {
-      width: 100%;
-      height: 180px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 4rem;
-      position: relative;
-      overflow: hidden;
-      transition: filter 0.3s;
-    }
-    .project-thumb::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        90deg,
-        rgba(0,0,0,0.05) 0px,
-        rgba(0,0,0,0.05) 2px,
-        transparent 2px,
-        transparent 4px
-      );
-    }
-    .project-body { padding: 1.2rem; }
-    .project-tag {
-      font-family: var(--pixel);
-      font-size: 0.35rem;
-      padding: 0.25rem 0.6rem;
-      border: 1px solid;
-      display: inline-block;
-      margin-bottom: 0.7rem;
-      letter-spacing: 1px;
-    }
-    .project-body h3 {
-      font-family: var(--pixel);
-      font-size: 0.55rem;
-      margin-bottom: 0.6rem;
-      line-height: 1.7;
-      letter-spacing: 1px;
-    }
-    .project-body p {
-      color: #9997bb;
-      font-size: 0.9rem;
-      line-height: 1.7;
-      margin-bottom: 1rem;
-    }
-    .project-links { display: flex; gap: 0.7rem; }
-    .project-link {
-      font-family: var(--pixel);
-      font-size: 0.4rem;
-      padding: 0.5rem 0.8rem;
-      text-decoration: none;
-      border: 1px solid;
-      transition: background 0.15s, color 0.15s;
-      letter-spacing: 1px;
-    }
+    .game-ctas { display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:2px solid rgba(255,255,255,0.07); }
+    .game-link-btn { font-family:var(--pixel);font-size:0.42rem;padding:0.7rem 1.1rem;text-decoration:none;border:2px solid;display:inline-block;letter-spacing:1px;transition:transform 0.1s,box-shadow 0.1s; }
+    .game-link-btn:hover { transform:translate(-2px,-2px); }
 
-    /* SKILLS */
-    #skills { background: var(--bg2); }
-    #skills h2 { color: var(--green); }
-    #skills .section-line { background: var(--green); }
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
-    }
-    .skill-category {
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.06);
-      padding: 1.5rem;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .skill-category:hover { border-color: var(--green); transform: translate(-3px,-3px); }
-    .skill-cat-title {
-      font-family: var(--pixel);
-      font-size: 0.45rem;
-      letter-spacing: 2px;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .skill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .skill-chip {
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 0.3rem 0.7rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: var(--white);
-      border-radius: 0;
-      transition: background 0.15s;
-    }
-    .skill-chip:hover { background: rgba(255,255,255,0.1); }
+    /* Nav between projects */
+    .game-nav { display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:2px solid rgba(255,255,255,0.07); }
+    .game-nav-btn { font-family:var(--pixel);font-size:0.4rem;color:var(--gray);background:none;border:1px solid rgba(255,255,255,0.12);padding:0.5rem 0.9rem;cursor:none;letter-spacing:1px;transition:color 0.2s,border-color 0.2s; }
+    .game-nav-btn:hover { color:var(--white);border-color:var(--white); }
+    .game-nav-btn:disabled { opacity:0.25;pointer-events:none; }
 
-    /* SKILL BARS */
-    .skill-bar-list { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.5rem; }
-    .skill-bar-item { }
-    .skill-bar-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      margin-bottom: 0.3rem;
-      color: #ccc;
-    }
-    .skill-bar-track {
-      height: 12px;
-      background: rgba(255,255,255,0.06);
-      position: relative;
-    }
-    .skill-bar-fill {
-      height: 100%;
-      position: relative;
-      animation: fillBar 1.5s ease-out forwards;
-      transform-origin: left;
-    }
-    @keyframes fillBar {
-      from { width: 0; }
-    }
-    .skill-bar-track::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        90deg, transparent, transparent 6px,
-        rgba(15,14,23,0.4) 6px, rgba(15,14,23,0.4) 8px
-      );
-    }
-
-    /* CONTACT */
-    #contact { background: var(--bg); }
-    #contact h2 { color: var(--purple); }
-    #contact .section-line { background: var(--purple); }
-    .contact-inner {
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .contact-inner p {
-      color: #b0aeca;
-      line-height: 1.8;
-      margin-bottom: 2rem;
-      font-size: 1.05rem;
-    }
-    .contact-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-bottom: 2.5rem;
-    }
-    .contact-card {
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.08);
-      padding: 1rem 1.5rem;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-      transition: border-color 0.2s, transform 0.2s;
-      min-width: 120px;
-    }
-    .contact-card:hover { transform: translate(-3px,-3px); }
-    .contact-card .cc-icon { font-size: 1.8rem; }
-    .contact-card .cc-label {
-      font-family: var(--pixel);
-      font-size: 0.38rem;
-      letter-spacing: 1px;
-    }
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      text-align: left;
-    }
-    .contact-form input,
-    .contact-form textarea {
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.08);
-      color: var(--white);
-      font-family: var(--body);
-      font-size: 0.95rem;
-      padding: 0.8rem 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-      resize: vertical;
-    }
-    .contact-form input:focus,
-    .contact-form textarea:focus {
-      border-color: var(--purple);
-    }
-    .contact-form textarea { min-height: 120px; }
-
-    /* FOOTER */
-    footer {
-      background: var(--bg2);
-      border-top: 2px solid rgba(255,255,255,0.05);
-      padding: 2rem;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-    footer p {
-      font-family: var(--pixel);
-      font-size: 0.4rem;
-      color: var(--gray);
-      letter-spacing: 1px;
-      line-height: 2;
-    }
-    footer span { color: var(--pink); }
-
-    /* PIXEL DIVIDER */
-    .pixel-divider {
-      width: 100%;
-      height: 8px;
-      background: repeating-linear-gradient(
-        90deg,
-        var(--yellow) 0, var(--yellow) 16px,
-        var(--pink) 16px, var(--pink) 32px,
-        var(--cyan) 32px, var(--cyan) 48px,
-        var(--green) 48px, var(--green) 64px,
-        var(--purple) 64px, var(--purple) 80px,
-        var(--orange) 80px, var(--orange) 96px
-      );
-      opacity: 0.35;
-      position: relative; z-index: 2;
-    }
-
-    /* SCROLL FADE IN */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    @media (max-width: 700px) {
-      .about-grid { grid-template-columns: 1fr; }
-      nav { padding: 1rem; }
-      .nav-links { gap: 1rem; }
+    @media(max-width:700px) {
+      .about-grid{grid-template-columns:1fr} nav{padding:1rem} .nav-links{gap:1rem}
+      .screenshots{grid-template-columns:1fr 1fr} .overlay-panel{width:100%}
     }
   </style>
 </head>
@@ -587,6 +220,18 @@
 
 <div id="cursor"></div>
 <div id="cursor-trail"></div>
+
+<!-- GAME DETAIL OVERLAY -->
+<div id="game-overlay" role="dialog" aria-modal="true">
+  <div class="overlay-backdrop" id="overlay-backdrop"></div>
+  <div class="overlay-panel" id="overlay-panel">
+    <div class="overlay-close">
+      <button class="close-btn" id="close-btn">← BACK</button>
+      <span class="overlay-breadcrumb">PROJECTS / <span id="ob-title">—</span></span>
+    </div>
+    <div id="overlay-content"></div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -604,22 +249,16 @@
   <div class="hero-bg-shapes" id="pixelBg"></div>
   <div class="hero-inner">
     <div class="pixel-badge">▶ AVAILABLE FOR WORK ◀</div>
-    <div class="hero-avatar">
-      <div class="hero-avatar-inner">🎮</div>
-    </div>
+    <div class="hero-avatar"><div class="hero-avatar-inner">🎮</div></div>
     <h1 class="hero-name">ZULFAMI ASHRAFI<br/>BIN WAKIF</h1>
     <div class="hero-title">// GAME DESIGN STUDENT //</div>
-    <p class="hero-desc">
-      Crafting worlds, mechanics, and experiences that players remember.
-      Passionate about indie games, pixel art, and the stories levels tell.
-    </p>
+    <p class="hero-desc">Crafting worlds, mechanics, and experiences that players remember. Passionate about indie games, pixel art, and the stories levels tell.</p>
     <div class="hero-ctas">
       <a href="#projects" class="btn btn-primary">▶ SEE MY WORK</a>
       <a href="#contact" class="btn btn-secondary">✉ GET IN TOUCH</a>
     </div>
   </div>
 </section>
-
 <div class="pixel-divider"></div>
 
 <!-- ABOUT -->
@@ -627,248 +266,152 @@
   <div class="section-inner">
     <div class="about-grid reveal">
       <div class="about-text">
-        <h2 class="section-title">ABOUT ME</h2>
-        <div class="section-line"></div>
-        <p>
-          Hey! I'm Zulfami — a game design student who fell in love with games
-          long before I understood how they were made. Now I'm obsessed with
-          <em>why</em> certain mechanics feel amazing and how a single level
-          can tell an entire story.
-        </p>
-        <p>
-          I specialise in game feel, level design, and narrative systems.
-          Whether it's a cozy pixel platformer or a tightly-tuned puzzle,
-          I want every moment to feel intentional and fun.
-        </p>
-        <a href="#projects" class="btn btn-primary" style="margin-top:1rem;">VIEW PROJECTS</a>
+        <h2 class="section-title" style="color:var(--cyan)">ABOUT ME</h2>
+        <div class="section-line" style="background:var(--cyan)"></div>
+        <p>Hey! I'm Zulfami — a game design student who fell in love with games long before I understood how they were made. Now I'm obsessed with <em>why</em> certain mechanics feel amazing and how a single level can tell an entire story.</p>
+        <p>I specialise in game feel, level design, and narrative systems. Whether it's a cozy pixel platformer or a tightly-tuned puzzle, I want every moment to feel intentional and fun.</p>
+        <a href="#projects" class="btn btn-primary" style="margin-top:1rem">VIEW PROJECTS</a>
       </div>
       <div class="about-stats">
-        <div class="stat-card">
-          <span class="stat-num" style="color:var(--yellow)">8+</span>
-          <span class="stat-label">PROJECTS SHIPPED</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num" style="color:var(--pink)">3</span>
-          <span class="stat-label">GAME JAMS WON</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num" style="color:var(--cyan)">2+</span>
-          <span class="stat-label">YEARS DESIGNING</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num" style="color:var(--green)">∞</span>
-          <span class="stat-label">HOURS OF PLAYTESTING</span>
-        </div>
+        <div class="stat-card"><span class="stat-num" style="color:var(--yellow)">8+</span><span class="stat-label">PROJECTS SHIPPED</span></div>
+        <div class="stat-card"><span class="stat-num" style="color:var(--pink)">3</span><span class="stat-label">GAME JAMS WON</span></div>
+        <div class="stat-card"><span class="stat-num" style="color:var(--cyan)">2+</span><span class="stat-label">YEARS DESIGNING</span></div>
+        <div class="stat-card"><span class="stat-num" style="color:var(--green)">∞</span><span class="stat-label">HOURS PLAYTESTING</span></div>
       </div>
     </div>
   </div>
 </section>
-
 <div class="pixel-divider"></div>
 
 <!-- PROJECTS -->
 <section id="projects">
   <div class="section-inner">
-    <h2 class="section-title reveal">MY PROJECTS</h2>
-    <div class="section-line reveal" style="background:var(--yellow);"></div>
+    <h2 class="section-title reveal" style="color:var(--yellow)">MY PROJECTS</h2>
+    <div class="section-line reveal" style="background:var(--yellow)"></div>
     <div class="projects-grid">
 
-      <div class="project-card reveal" style="--hover-color:var(--cyan)">
-        <div class="project-thumb" style="background:linear-gradient(135deg,#1a3a4f,#0d2030)">🌊</div>
+      <div class="project-card reveal" data-game="tidewalker">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#1a3a4f,#0d2030)">🌊<div class="card-hover-hint">▶ VIEW PROJECT</div></div>
         <div class="project-body">
           <span class="project-tag" style="color:var(--cyan);border-color:var(--cyan)">PLATFORMER</span>
           <h3 style="color:var(--white)">TIDEWALKER</h3>
-          <p>A fluid-based puzzle platformer where the tide rises with your heart rate. Designed in Unity with custom shader-based water physics.</p>
-          <div class="project-links">
-            <a href="#" class="project-link" style="color:var(--cyan);border-color:var(--cyan)">▶ PLAY</a>
-            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">GITHUB</a>
-          </div>
+          <p>A fluid-based puzzle platformer where the tide rises with your heart rate. Custom water physics in Unity.</p>
+          <span class="view-details-btn" style="color:var(--cyan);border-color:var(--cyan)">▶ VIEW DETAILS</span>
         </div>
       </div>
 
-      <div class="project-card reveal" style="transition-delay:0.1s">
-        <div class="project-thumb" style="background:linear-gradient(135deg,#3a1a4a,#1e0d2e)">🌙</div>
+      <div class="project-card reveal" style="transition-delay:.1s" data-game="dreammerchant">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#3a1a4a,#1e0d2e)">🌙<div class="card-hover-hint">▶ VIEW PROJECT</div></div>
         <div class="project-body">
           <span class="project-tag" style="color:var(--purple);border-color:var(--purple)">NARRATIVE RPG</span>
           <h3 style="color:var(--white)">DREAM MERCHANT</h3>
-          <p>A top-down RPG about a shopkeeper who sells memories. Features a branching dialogue system and a fully original pixel art tileset.</p>
-          <div class="project-links">
-            <a href="#" class="project-link" style="color:var(--purple);border-color:var(--purple)">▶ PLAY</a>
-            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">ITCH.IO</a>
-          </div>
+          <p>A top-down RPG about a shopkeeper who sells memories. Branching dialogue, original pixel art tileset.</p>
+          <span class="view-details-btn" style="color:var(--purple);border-color:var(--purple)">▶ VIEW DETAILS</span>
         </div>
       </div>
 
-      <div class="project-card reveal" style="transition-delay:0.2s">
-        <div class="project-thumb" style="background:linear-gradient(135deg,#3a2a0a,#1e1400)">🍄</div>
+      <div class="project-card reveal" style="transition-delay:.2s" data-game="sporerunner">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#3a2a0a,#1e1400)">🍄<div class="card-hover-hint">▶ VIEW PROJECT</div></div>
         <div class="project-body">
           <span class="project-tag" style="color:var(--orange);border-color:var(--orange)">JAM GAME</span>
           <h3 style="color:var(--white)">SPORE RUNNER</h3>
-          <p>48-hour game jam entry. A fast-paced mushroom-collecting runner with procedurally generated forests. Won Best Aesthetics.</p>
-          <div class="project-links">
-            <a href="#" class="project-link" style="color:var(--orange);border-color:var(--orange)">▶ PLAY</a>
-            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">DEVLOG</a>
-          </div>
+          <p>48-hour jam entry. Procedurally generated mushroom forest runner. Won Best Aesthetics at Ludum Dare.</p>
+          <span class="view-details-btn" style="color:var(--orange);border-color:var(--orange)">▶ VIEW DETAILS</span>
         </div>
       </div>
 
-      <div class="project-card reveal" style="transition-delay:0.3s">
-        <div class="project-thumb" style="background:linear-gradient(135deg,#1a3a1a,#0d200d)">🌿</div>
+      <div class="project-card reveal" style="transition-delay:.3s" data-game="rootbound">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#1a3a1a,#0d200d)">🌿<div class="card-hover-hint">▶ VIEW PROJECT</div></div>
         <div class="project-body">
           <span class="project-tag" style="color:var(--green);border-color:var(--green)">PUZZLE</span>
           <h3 style="color:var(--white)">ROOTBOUND</h3>
-          <p>A cozy gardening puzzle game about untangling roots to let light through. Designed entirely in GDevelop with original music.</p>
-          <div class="project-links">
-            <a href="#" class="project-link" style="color:var(--green);border-color:var(--green)">▶ PLAY</a>
-            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">ITCH.IO</a>
-          </div>
+          <p>A cozy gardening puzzle about untangling roots to let light through. Original music from real plant recordings.</p>
+          <span class="view-details-btn" style="color:var(--green);border-color:var(--green)">▶ VIEW DETAILS</span>
         </div>
       </div>
 
-      <div class="project-card reveal" style="transition-delay:0.15s">
-        <div class="project-thumb" style="background:linear-gradient(135deg,#3a1a1a,#200d0d)">🔥</div>
+      <div class="project-card reveal" style="transition-delay:.15s" data-game="emberknight">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#3a1a1a,#200d0d)">🔥<div class="card-hover-hint">▶ VIEW PROJECT</div></div>
         <div class="project-body">
           <span class="project-tag" style="color:var(--pink);border-color:var(--pink)">ACTION</span>
           <h3 style="color:var(--white)">EMBER KNIGHT</h3>
-          <p>A roguelite dungeon crawler with elemental combo mechanics. Each run remixes 60+ hand-crafted rooms. Built in Unity with C#.</p>
-          <div class="project-links">
-            <a href="#" class="project-link" style="color:var(--pink);border-color:var(--pink)">▶ PLAY</a>
-            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">GITHUB</a>
-          </div>
+          <p>A roguelite dungeon crawler with elemental combo mechanics. 60+ hand-crafted rooms. Built in Unity.</p>
+          <span class="view-details-btn" style="color:var(--pink);border-color:var(--pink)">▶ VIEW DETAILS</span>
         </div>
       </div>
 
-      <div class="project-card reveal" style="transition-delay:0.25s">
-        <div class="project-thumb" style="background:linear-gradient(135deg,#2a2a1a,#18180a)">⚙️</div>
+      <div class="project-card reveal" style="transition-delay:.25s" data-game="clockworkcove">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#2a2a1a,#18180a)">⚙️<div class="card-hover-hint">▶ VIEW PROJECT</div></div>
         <div class="project-body">
           <span class="project-tag" style="color:var(--yellow);border-color:var(--yellow)">PROTOTYPE</span>
           <h3 style="color:var(--white)">CLOCKWORK COVE</h3>
-          <p>A steampunk exploration prototype focused on environmental storytelling. Every gear and mechanism tells part of the narrative.</p>
-          <div class="project-links">
-            <a href="#" class="project-link" style="color:var(--yellow);border-color:var(--yellow)">▶ DEMO</a>
-            <a href="#" class="project-link" style="color:var(--gray);border-color:var(--gray)">GDD PDF</a>
-          </div>
+          <p>Steampunk exploration prototype. Environmental storytelling — every gear and mechanism tells the story.</p>
+          <span class="view-details-btn" style="color:var(--yellow);border-color:var(--yellow)">▶ VIEW DETAILS</span>
         </div>
       </div>
 
     </div>
   </div>
 </section>
-
 <div class="pixel-divider"></div>
 
 <!-- SKILLS -->
 <section id="skills">
   <div class="section-inner">
-    <h2 class="section-title reveal">SKILLS & TOOLS</h2>
-    <div class="section-line reveal" style="background:var(--green);"></div>
+    <h2 class="section-title reveal" style="color:var(--green)">SKILLS & TOOLS</h2>
+    <div class="section-line reveal" style="background:var(--green)"></div>
     <div class="skills-grid">
-
       <div class="skill-category reveal">
         <div class="skill-cat-title" style="color:var(--yellow)">🎮 GAME ENGINES</div>
         <div class="skill-bar-list">
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>Unity</span><span>85%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%;background:var(--yellow)"></div></div>
-          </div>
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>Godot</span><span>70%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%;background:var(--yellow)"></div></div>
-          </div>
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>GDevelop</span><span>60%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%;background:var(--yellow)"></div></div>
-          </div>
+          <div><div class="skill-bar-label"><span>Unity</span><span>85%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%;background:var(--yellow)"></div></div></div>
+          <div><div class="skill-bar-label"><span>Godot</span><span>70%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%;background:var(--yellow)"></div></div></div>
+          <div><div class="skill-bar-label"><span>GDevelop</span><span>60%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%;background:var(--yellow)"></div></div></div>
         </div>
       </div>
-
-      <div class="skill-category reveal" style="transition-delay:0.1s">
+      <div class="skill-category reveal" style="transition-delay:.1s">
         <div class="skill-cat-title" style="color:var(--pink)">🎨 ART & PIXEL ART</div>
         <div class="skill-bar-list">
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>Aseprite</span><span>90%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%;background:var(--pink)"></div></div>
-          </div>
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>Photoshop</span><span>65%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:65%;background:var(--pink)"></div></div>
-          </div>
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>Figma</span><span>55%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:55%;background:var(--pink)"></div></div>
-          </div>
+          <div><div class="skill-bar-label"><span>Aseprite</span><span>90%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%;background:var(--pink)"></div></div></div>
+          <div><div class="skill-bar-label"><span>Photoshop</span><span>65%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:65%;background:var(--pink)"></div></div></div>
+          <div><div class="skill-bar-label"><span>Figma</span><span>55%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:55%;background:var(--pink)"></div></div></div>
         </div>
       </div>
-
-      <div class="skill-category reveal" style="transition-delay:0.2s">
+      <div class="skill-category reveal" style="transition-delay:.2s">
         <div class="skill-cat-title" style="color:var(--cyan)">💻 PROGRAMMING</div>
         <div class="skill-bar-list">
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>C# (Unity)</span><span>80%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%;background:var(--cyan)"></div></div>
-          </div>
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>GDScript</span><span>70%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%;background:var(--cyan)"></div></div>
-          </div>
-          <div class="skill-bar-item">
-            <div class="skill-bar-label"><span>Python</span><span>50%</span></div>
-            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%;background:var(--cyan)"></div></div>
-          </div>
+          <div><div class="skill-bar-label"><span>C# (Unity)</span><span>80%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%;background:var(--cyan)"></div></div></div>
+          <div><div class="skill-bar-label"><span>GDScript</span><span>70%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%;background:var(--cyan)"></div></div></div>
+          <div><div class="skill-bar-label"><span>Python</span><span>50%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%;background:var(--cyan)"></div></div></div>
         </div>
       </div>
-
-      <div class="skill-category reveal" style="transition-delay:0.3s">
+      <div class="skill-category reveal" style="transition-delay:.3s">
         <div class="skill-cat-title" style="color:var(--green)">📐 DESIGN SKILLS</div>
         <div class="skill-list">
-          <span class="skill-chip">Level Design</span>
-          <span class="skill-chip">Game Feel</span>
-          <span class="skill-chip">Narrative Design</span>
-          <span class="skill-chip">Prototyping</span>
-          <span class="skill-chip">Playtesting</span>
-          <span class="skill-chip">GDD Writing</span>
-          <span class="skill-chip">UI/UX</span>
-          <span class="skill-chip">World Building</span>
+          <span class="skill-chip">Level Design</span><span class="skill-chip">Game Feel</span><span class="skill-chip">Narrative Design</span><span class="skill-chip">Prototyping</span><span class="skill-chip">Playtesting</span><span class="skill-chip">GDD Writing</span><span class="skill-chip">UI/UX</span><span class="skill-chip">World Building</span>
         </div>
       </div>
-
     </div>
   </div>
 </section>
-
 <div class="pixel-divider"></div>
 
 <!-- CONTACT -->
 <section id="contact">
   <div class="section-inner">
     <div class="contact-inner reveal">
-      <h2 class="section-title">LET'S COLLAB</h2>
-      <div class="section-line" style="background:var(--purple);margin:0.5rem auto 2rem;"></div>
-      <p>
-        Whether it's a game jam team, a freelance project, or just talking
-        about why Celeste has the best game feel ever — my inbox is open.
-      </p>
+      <h2 class="section-title" style="color:var(--purple)">LET'S COLLAB</h2>
+      <div class="section-line" style="background:var(--purple);margin:0.5rem auto 2rem"></div>
+      <p>Whether it's a game jam team, a freelance project, or just talking about why Celeste has the best game feel ever — my inbox is open.</p>
       <div class="contact-links">
-        <a href="mailto:zulfami@email.com" class="contact-card" style="border-color:rgba(185,124,255,0.3)">
-          <div class="cc-icon">✉️</div>
-          <div class="cc-label" style="color:var(--purple)">EMAIL</div>
-        </a>
-        <a href="https://github.com/" class="contact-card" style="border-color:rgba(255,229,102,0.3)">
-          <div class="cc-icon">🐙</div>
-          <div class="cc-label" style="color:var(--yellow)">GITHUB</div>
-        </a>
-        <a href="https://itch.io/" class="contact-card" style="border-color:rgba(255,107,181,0.3)">
-          <div class="cc-icon">🎮</div>
-          <div class="cc-label" style="color:var(--pink)">ITCH.IO</div>
-        </a>
-        <a href="https://linkedin.com/" class="contact-card" style="border-color:rgba(94,240,240,0.3)">
-          <div class="cc-icon">💼</div>
-          <div class="cc-label" style="color:var(--cyan)">LINKEDIN</div>
-        </a>
+        <a href="mailto:zulfami@email.com" class="contact-card" style="border-color:rgba(185,124,255,0.3)"><div class="cc-icon">✉️</div><div class="cc-label" style="color:var(--purple)">EMAIL</div></a>
+        <a href="https://github.com/" class="contact-card" style="border-color:rgba(255,229,102,0.3)"><div class="cc-icon">🐙</div><div class="cc-label" style="color:var(--yellow)">GITHUB</div></a>
+        <a href="https://itch.io/" class="contact-card" style="border-color:rgba(255,107,181,0.3)"><div class="cc-icon">🎮</div><div class="cc-label" style="color:var(--pink)">ITCH.IO</div></a>
+        <a href="https://linkedin.com/" class="contact-card" style="border-color:rgba(94,240,240,0.3)"><div class="cc-icon">💼</div><div class="cc-label" style="color:var(--cyan)">LINKEDIN</div></a>
       </div>
       <div class="contact-form">
-        <input type="text" placeholder="Your name" />
-        <input type="email" placeholder="Your email" />
+        <input type="text" placeholder="Your name"/>
+        <input type="email" placeholder="Your email"/>
         <textarea placeholder="What's on your mind?"></textarea>
         <button class="btn btn-primary" style="align-self:flex-start">▶ SEND MESSAGE</button>
       </div>
@@ -876,53 +419,240 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <p>© 2025 ZULFAMI ASHRAFI BIN WAKIF — MADE WITH <span>♥</span> & LOTS OF PIXELS</p>
-  <p style="margin-top:0.5rem">PRESS START TO PLAY LIFE</p>
+  <p style="margin-top:.5rem">PRESS START TO PLAY LIFE</p>
 </footer>
 
 <script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const trail = document.getElementById('cursor-trail');
-  let mx = 0, my = 0;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.top = (my - 8) + 'px';
-    cursor.style.left = (mx - 8) + 'px';
-    setTimeout(() => {
-      trail.style.top = (my - 4) + 'px';
-      trail.style.left = (mx - 4) + 'px';
-    }, 80);
-  });
+// Cursor
+const cursor = document.getElementById('cursor'), trail = document.getElementById('cursor-trail');
+document.addEventListener('mousemove', e => {
+  cursor.style.cssText += `top:${e.clientY-8}px;left:${e.clientX-8}px`;
+  setTimeout(() => { trail.style.cssText += `top:${e.clientY-4}px;left:${e.clientX-4}px`; }, 80);
+});
 
-  // Floating pixels background
-  const colors = ['#ffe566','#ff6bb5','#5ef0f0','#6ef98e','#b97cff','#ff9b42'];
-  const shapes = ['▪','■','▲','◆','●','★'];
-  const bg = document.getElementById('pixelBg');
-  for (let i = 0; i < 30; i++) {
-    const el = document.createElement('div');
-    el.className = 'floating-pixel';
-    el.textContent = shapes[Math.floor(Math.random()*shapes.length)];
-    el.style.cssText = `
-      left:${Math.random()*100}%;
-      font-size:${8+Math.random()*20}px;
-      color:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${8+Math.random()*18}s;
-      animation-delay:${-Math.random()*20}s;
-    `;
-    bg.appendChild(el);
-  }
+// Floating pixels
+const colors=['#ffe566','#ff6bb5','#5ef0f0','#6ef98e','#b97cff','#ff9b42'],shapes=['▪','■','▲','◆','●','★'],bg=document.getElementById('pixelBg');
+for(let i=0;i<30;i++){const el=document.createElement('div');el.className='floating-pixel';el.textContent=shapes[Math.floor(Math.random()*shapes.length)];el.style.cssText=`left:${Math.random()*100}%;font-size:${8+Math.random()*20}px;color:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${8+Math.random()*18}s;animation-delay:${-Math.random()*20}s`;bg.appendChild(el);}
 
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); }
-    });
-  }, { threshold: 0.12 });
-  reveals.forEach(r => observer.observe(r));
+// Scroll reveal
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+
+// ── GAME DATA ──────────────────────────────────────────────────────
+const GAME_KEYS = ['tidewalker','dreammerchant','sporerunner','rootbound','emberknight','clockworkcove'];
+
+const games = {
+  tidewalker:{
+    title:'TIDEWALKER', subtitle:'What if the ocean could feel your heartbeat?',
+    tag:'PLATFORMER', tagColor:'var(--cyan)', accent:'var(--cyan)',
+    year:'2024', duration:'6 MONTHS', team:'SOLO', engine:'UNITY',
+    banner:'🌊', bannerBg:'linear-gradient(135deg,#0d2030,#1a3a4f,#0a3040)',
+    overview:`Tidewalker is a fluid-based puzzle platformer built around a single core idea: the tide rises and falls in response to the player's real-time stress. Using device sensors (or keyboard simulation), the ambient water level shifts — calm players wade through tranquil shallows, anxious players race against rising floods.`,
+    descExtra:`The game was born from a university brief on biometric game design. I wanted to explore how environmental hazards could mirror internal states, making the world a direct reflection of the player's emotional condition rather than a passive backdrop.`,
+    features:[
+      'Real-time water physics with custom buoyancy simulation in Unity DOTS',
+      '15 handcrafted levels across 3 biomes — tidal caves, sunken ruins, coral towers',
+      'Dynamic ambient soundtrack that evolves with water depth',
+      'Accessibility mode replacing biometric input with a manual tide slider',
+      'Full speedrun mode with ghost replay system',
+    ],
+    designNotes:`The biggest challenge was making the mechanic feel fair rather than punishing. I ran 11 playtests and iterated on the "panic ceiling" — how fast the water can rise — 8 times before players stopped feeling frustrated and started feeling excited.`,
+    screenshots:[{e:'🌊',bg:'linear-gradient(135deg,#0a2535,#1a4055)'},{e:'🪸',bg:'linear-gradient(135deg,#0d3535,#1a5050)'},{e:'💧',bg:'linear-gradient(135deg,#101828,#1a2840)'}],
+    tech:['Unity 2022 LTS','C#','Unity DOTS','FMOD','Aseprite','Custom Water Shader'],
+    links:[{label:'▶ PLAY ON ITCH.IO',color:'var(--cyan)'},{label:'GITHUB',color:'var(--gray)'},{label:'GDD PDF',color:'var(--gray)'}],
+  },
+  dreammerchant:{
+    title:'DREAM MERCHANT', subtitle:'Every memory has a price. What will you sell?',
+    tag:'NARRATIVE RPG', tagColor:'var(--purple)', accent:'var(--purple)',
+    year:'2024', duration:'8 MONTHS', team:'3 PEOPLE', engine:'GODOT 4',
+    banner:'🌙', bannerBg:'linear-gradient(135deg,#1e0d2e,#3a1a4a,#180920)',
+    overview:`Dream Merchant is a top-down narrative RPG where you play as a shopkeeper who trades in memories. Customers arrive with experiences they want to forget; your job is to appraise, purchase, and sometimes relive those memories through short vignette levels.`,
+    descExtra:`The project grew from a design challenge: what if the economy of a game was built entirely on intangible things? Instead of gold coins, you collect grief, nostalgia, and joy. The moral weight of each transaction is the game's main source of tension.`,
+    features:[
+      'Branching dialogue system with 200+ nodes and 6 possible endings',
+      'Memory vignettes — short playable flashbacks that contextualise each item',
+      'Reputation system that changes which customers trust you',
+      'Original 32×32 pixel art tileset (600+ tiles) drawn entirely in Aseprite',
+      'Dynamic shop music that layers based on which memories you\'ve collected',
+    ],
+    designNotes:`Writing the dialogue was the most intensive part. I mapped every conversation in Twine first, then ported to Godot's custom dialogue manager. The six endings emerged naturally once the reputation system was in — I hadn't planned most of them originally.`,
+    screenshots:[{e:'🌙',bg:'linear-gradient(135deg,#1e0d2e,#2e1a3e)'},{e:'🏪',bg:'linear-gradient(135deg,#180920,#251240)'},{e:'✨',bg:'linear-gradient(135deg,#0d0818,#1a1030)'}],
+    tech:['Godot 4','GDScript','Twine (prototyping)','Aseprite','LMMS','Custom Dialogue Engine'],
+    links:[{label:'▶ PLAY ON ITCH.IO',color:'var(--purple)'},{label:'DEVLOG',color:'var(--gray)'}],
+  },
+  sporerunner:{
+    title:'SPORE RUNNER', subtitle:'The forest grows faster than you can run.',
+    tag:'JAM GAME', tagColor:'var(--orange)', accent:'var(--orange)',
+    year:'2023', duration:'48 HOURS', team:'2 PEOPLE', engine:'GODOT 3',
+    banner:'🍄', bannerBg:'linear-gradient(135deg,#1e1400,#3a2a0a,#2a1c06)',
+    overview:`Spore Runner was built in 48 hours for Ludum Dare 54 (theme: "Limited Space"). You play as a spore drifting through a procedurally generated mycelial forest, collecting mushrooms before the canopy closes in. The faster you move, the more spores you spread — and the denser the forest becomes.`,
+    descExtra:`This was my first jam with a collaborator. I handled all design and level logic; my partner wrote the procedural generation algorithm. We shipped with 10 minutes to spare and somehow won Best Aesthetics.`,
+    features:[
+      'Procedurally generated forest using a custom L-system variant',
+      'Score multiplier chain mechanic that rewards risky routes',
+      'Reactive soundscape — instruments layer as more mushrooms are collected',
+      'Controller support added in post-jam update',
+      '3 difficulty seeds with curated random parameters',
+    ],
+    designNotes:`The "limited space" constraint forced the design — the shrinking forest was an obvious mechanic but executing the feel took most of our time. We tuned the canopy close speed for 6 hours straight. The final number is 0.4 units/sec and I will never forget it.`,
+    screenshots:[{e:'🍄',bg:'linear-gradient(135deg,#2a1800,#3a2200)'},{e:'🌲',bg:'linear-gradient(135deg,#1a2200,#283000)'},{e:'✨',bg:'linear-gradient(135deg,#1e1400,#2a1c08)'}],
+    tech:['Godot 3','GDScript','L-System Proc-Gen','Aseprite','BFXR (SFX)'],
+    links:[{label:'▶ PLAY ON ITCH.IO',color:'var(--orange)'},{label:'LUDUM DARE PAGE',color:'var(--gray)'}],
+  },
+  rootbound:{
+    title:'ROOTBOUND', subtitle:'Cozy puzzles. Tangled roots. Perfect silence.',
+    tag:'PUZZLE', tagColor:'var(--green)', accent:'var(--green)',
+    year:'2023', duration:'4 MONTHS', team:'SOLO', engine:'GDEVELOP 5',
+    banner:'🌿', bannerBg:'linear-gradient(135deg,#0d200d,#1a3a1a,#0a1a0a)',
+    overview:`Rootbound is a cozy gardening puzzle game about untangling roots to guide sunlight to sleeping seeds. Each puzzle is a knot of vines — rotate, flip, and redirect them to draw a path of light from the sun to the soil.`,
+    descExtra:`I built Rootbound as a palette cleanser between bigger projects. The goal was "one mechanic, done beautifully." No combat, no narrative pressure — just plants and patience. I also wrote all the original music using only samples recorded from my own houseplants (yes, really).`,
+    features:[
+      '40 handcrafted puzzle levels across 4 garden biomes',
+      'Hint system that illuminates one valid root segment without solving the puzzle',
+      'Original soundtrack recorded from real plant sounds and garden ambience',
+      'Colour-blind accessibility mode with distinct shapes per root type',
+      'Daily puzzle mode with cloud sync for returning players',
+    ],
+    designNotes:`The hardest part of puzzle design is calibrating difficulty without a slider. I playtested each level with 5 different people and timed them. Any level causing over 8 minutes of confusion was redesigned or moved later in the sequence.`,
+    screenshots:[{e:'🌿',bg:'linear-gradient(135deg,#0d200d,#183018)'},{e:'🌱',bg:'linear-gradient(135deg,#0a1a0a,#152015)'},{e:'☀️',bg:'linear-gradient(135deg,#1a2a0a,#253510)'}],
+    tech:['GDevelop 5','JavaScript','Aseprite','Audacity','Original Field Recordings'],
+    links:[{label:'▶ PLAY ON ITCH.IO',color:'var(--green)'},{label:'DEVLOG',color:'var(--gray)'}],
+  },
+  emberknight:{
+    title:'EMBER KNIGHT', subtitle:'Every run. Every element. Every death, a lesson.',
+    tag:'ACTION ROGUELITE', tagColor:'var(--pink)', accent:'var(--pink)',
+    year:'2024', duration:'5 MONTHS', team:'SOLO', engine:'UNITY',
+    banner:'🔥', bannerBg:'linear-gradient(135deg,#200d0d,#3a1a1a,#280a0a)',
+    overview:`Ember Knight is a roguelite dungeon crawler where elemental combinations are the core combat language. Fire + Water = Steam. Ice + Lightning = Superconductor. Earth + Fire = Magma. Learning to chain elements across enemy types is the central skill curve.`,
+    descExtra:`I wanted to make a roguelite where death feels educational rather than punishing. Every run teaches you one new element interaction. The meta-progression is less about power and more about understanding — you unlock new knowledge, not just stats.`,
+    features:[
+      '12 element types with 28 unique interaction combos',
+      '60+ hand-crafted rooms assembled procedurally into dungeon layouts',
+      '8 boss encounters with adaptive phase transitions',
+      'Codex system that tracks discovered element combos with lore explanations',
+      'Run history visualiser showing route, deaths, and combo usage',
+    ],
+    designNotes:`Balancing 28 interactions is genuinely hard. I built a spreadsheet model of enemy health vs combo damage before writing a single line of combat code. The model was wrong in 12 places and I'm glad I found that out in a spreadsheet rather than Unity.`,
+    screenshots:[{e:'🔥',bg:'linear-gradient(135deg,#200d0d,#301010)'},{e:'⚡',bg:'linear-gradient(135deg,#1a1a00,#2a2800)'},{e:'❄️',bg:'linear-gradient(135deg,#0d1520,#151e2a)'}],
+    tech:['Unity 2022 LTS','C#','Aseprite','FMOD','Scriptable Object Architecture'],
+    links:[{label:'▶ PLAY ON ITCH.IO',color:'var(--pink)'},{label:'GITHUB',color:'var(--gray)'},{label:'GDD PDF',color:'var(--gray)'}],
+  },
+  clockworkcove:{
+    title:'CLOCKWORK COVE', subtitle:'The gears stopped. You need to find out why.',
+    tag:'EXPLORATION PROTOTYPE', tagColor:'var(--yellow)', accent:'var(--yellow)',
+    year:'2024', duration:'3 MONTHS', team:'SOLO', engine:'UNITY',
+    banner:'⚙️', bannerBg:'linear-gradient(135deg,#18180a,#2a2a1a,#201e0a)',
+    overview:`Clockwork Cove is a steampunk exploration prototype about an abandoned clockwork harbour town where every gear, lever, and mechanism is a fragment of a story. There are no NPCs and no dialogue. The narrative is told entirely through the state of the machines.`,
+    descExtra:`This was a personal research project into environmental storytelling. The question: how much narrative information can be encoded in the physical state of objects, without a single written word? The prototype has 4 areas and approximately 35 minutes of environmental story if you read everything.`,
+    features:[
+      'Fully interactive clockwork environment — every mechanism has a history',
+      '35+ story fragments embedded in machine states, wear patterns, and debris',
+      'Interconnected gear puzzles that double as narrative reveals',
+      'Original steampunk pixel art aesthetic with animated machinery',
+      'Full design document (GDD) with 42-page world-building bible',
+    ],
+    designNotes:`Environmental storytelling lives or dies on the player's willingness to read the world. I ran extensive playtesting on "attention hooks" — asymmetry, unexplained wear, and scale breaks (a tiny chair in a giant room) were consistently the most effective.`,
+    screenshots:[{e:'⚙️',bg:'linear-gradient(135deg,#18180a,#25250e)'},{e:'🏭',bg:'linear-gradient(135deg,#151208,#201e0c)'},{e:'🔩',bg:'linear-gradient(135deg,#1a160a,#252010)'}],
+    tech:['Unity 2022 LTS','C#','Aseprite','ProBuilder','Ink (Narrative Scripting)'],
+    links:[{label:'▶ PLAY DEMO',color:'var(--yellow)'},{label:'GDD PDF',color:'var(--gray)'},{label:'DEVLOG',color:'var(--gray)'}],
+  },
+};
+
+// ── OVERLAY ────────────────────────────────────────────────────────
+let currentGameKey = null;
+const overlay   = document.getElementById('game-overlay');
+const panel     = document.getElementById('overlay-panel');
+const content   = document.getElementById('overlay-content');
+const obTitle   = document.getElementById('ob-title');
+
+function buildPage(key) {
+  const g = games[key];
+  const idx = GAME_KEYS.indexOf(key);
+  const prevKey = idx > 0 ? GAME_KEYS[idx-1] : null;
+  const nextKey = idx < GAME_KEYS.length-1 ? GAME_KEYS[idx+1] : null;
+
+  const shots = g.screenshots.map(s=>`<div class="screenshot" style="background:${s.bg}">${s.e}</div>`).join('');
+  const tech  = g.tech.map(t=>`<span class="tech-chip">${t}</span>`).join('');
+  const feats = g.features.map(f=>`<li>${f}</li>`).join('');
+  const links = g.links.map(l=>`<a href="#" class="game-link-btn" style="color:${l.color};border-color:${l.color};box-shadow:3px 3px 0 ${l.color}44">${l.label}</a>`).join('');
+
+  return `
+    <div class="game-banner" style="background:${g.bannerBg}">${g.banner}</div>
+    <div class="game-content">
+      <div class="game-tag-row">
+        <span class="game-tag" style="color:${g.tagColor};border-color:${g.tagColor}">${g.tag}</span>
+        <span class="game-year-badge">${g.year}</span>
+      </div>
+      <div class="game-title" style="color:${g.accent}">${g.title}</div>
+      <div class="game-subtitle">${g.subtitle}</div>
+
+      <div class="game-meta">
+        <div class="game-meta-item"><span class="gmi-label">ENGINE</span><span class="gmi-val" style="color:${g.accent}">${g.engine}</span></div>
+        <div class="game-meta-item"><span class="gmi-label">DURATION</span><span class="gmi-val" style="color:${g.accent}">${g.duration}</span></div>
+        <div class="game-meta-item"><span class="gmi-label">TEAM</span><span class="gmi-val" style="color:${g.accent}">${g.team}</span></div>
+        <div class="game-meta-item"><span class="gmi-label">YEAR</span><span class="gmi-val" style="color:${g.accent}">${g.year}</span></div>
+      </div>
+
+      <div class="game-section">
+        <div class="game-section-title" style="color:${g.accent}">// OVERVIEW</div>
+        <p>${g.overview}</p>
+        <p>${g.descExtra}</p>
+      </div>
+
+      <div class="screenshots">${shots}</div>
+
+      <div class="game-section" style="--accent:${g.accent}">
+        <div class="game-section-title" style="color:${g.accent}">// KEY FEATURES</div>
+        <ul style="--accent:${g.accent}">${feats}</ul>
+      </div>
+
+      <div class="game-section">
+        <div class="game-section-title" style="color:${g.accent}">// DESIGN NOTES</div>
+        <p>${g.designNotes}</p>
+      </div>
+
+      <div class="game-section">
+        <div class="game-section-title" style="color:${g.accent}">// TECH STACK</div>
+        <div class="tech-list">${tech}</div>
+      </div>
+
+      <div class="game-ctas">${links}</div>
+
+      <div class="game-nav">
+        <button class="game-nav-btn" onclick="openGame('${prevKey}')" ${!prevKey?'disabled':''}>← PREV PROJECT</button>
+        <button class="game-nav-btn" onclick="openGame('${nextKey}')" ${!nextKey?'disabled':''}>NEXT PROJECT →</button>
+      </div>
+    </div>
+  `;
+}
+
+function openGame(key) {
+  if(!key||!games[key]) return;
+  currentGameKey = key;
+  obTitle.textContent = games[key].title;
+  content.innerHTML = buildPage(key);
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  panel.scrollTop = 0;
+}
+
+function closeGame() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('close-btn').addEventListener('click', closeGame);
+document.getElementById('overlay-backdrop').addEventListener('click', closeGame);
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeGame(); });
+
+document.querySelectorAll('.project-card[data-game]').forEach(card => {
+  card.addEventListener('click', () => openGame(card.dataset.game));
+});
+
+// Expose openGame globally so nav buttons inside innerHTML can call it
+window.openGame = openGame;
 </script>
 </body>
 </html>
