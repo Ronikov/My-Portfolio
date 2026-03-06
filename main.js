@@ -55,8 +55,8 @@ function buildProjectCards() {
     card.style.transitionDelay = delay + 's';
 
     card.innerHTML = `
-      <div class="project-thumb" style="background:${g.cardBg}">
-        ${g.cardEmoji}
+      <div class="project-thumb">
+        <img src="${g.cardImage}" alt="${g.title}" class="project-thumb-img"/>
         <div class="card-hover-hint">▶ VIEW PROJECT</div>
       </div>
       <div class="project-body">
@@ -86,7 +86,7 @@ function buildDetailPage(key) {
   const nextKey = idx < GAME_KEYS.length - 1 ? GAME_KEYS[idx + 1] : null;
 
   const shotsHTML = g.screenshots
-    .map(s => `<div class="screenshot" style="background:${s.bg}">${s.e}</div>`)
+    .map(s => `<div class="screenshot"><img src="${s.image}" alt="${s.alt}"/></div>`)
     .join('');
 
   const techHTML = g.tech
@@ -102,7 +102,9 @@ function buildDetailPage(key) {
     .join('');
 
   return `
-    <div class="game-banner" style="background:${g.bannerBg}">${g.banner}</div>
+    <div class="game-banner">
+      <img src="${g.bannerImage}" alt="${g.title} banner" class="game-banner-img"/>
+    </div>
     <div class="game-content">
 
       <div class="game-tag-row">
